@@ -3,7 +3,7 @@
    ========================================================================== */
 
 /* ---------- Reset ---------- */
-*, *::before, *::after { box-sizing: border-box; }
+/* *, *::before, *::after { box-sizing: borer-box; } */
 * { margin: 0; padding: 0; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 body, h1, h2, h3, h4, h5, h6, p, ul, ol, figure { margin: 0; }

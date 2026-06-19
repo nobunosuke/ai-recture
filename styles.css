@@ -25,10 +25,10 @@ button { font: inherit; cursor: pointer; border: 0; background: none; color: inh
   --border-strong: #D6D3D1;
 
   /* accent (primary) */
-  --accent: #4F46E5;
-  --accent-hover: #4338CA;
-  --accent-soft: #EEF2FF;
-  --accent-ink: #312E81;
+  --accent: #EA580C;
+  --accent-hover: #C2410C;
+  --accent-soft: #FFF7ED;
+  --accent-ink: #7C2D12;
 
   /* topic colors */
   --c-issue: #D97706;
@@ -228,7 +228,7 @@ code, kbd, samp {
 }
 .hero__title em {
   font-style: normal;
-  background: linear-gradient(135deg, var(--accent), #8B5CF6);
+  background: linear-gradient(135deg, var(--accent), #F97316);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

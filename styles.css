@@ -78,7 +78,18 @@ button { font: inherit; cursor: pointer; border: 0; background: none; color: inh
 
   /* container */
   --container: 1120px;
+
+  /* topic theme (per-page accent — default: branch) */
+  --topic: var(--c-branch);
+  --topic-bg: var(--c-branch-bg);
 }
+
+/* per-page topic theme override */
+.topic-issue    { --topic: var(--c-issue);    --topic-bg: var(--c-issue-bg); }
+.topic-branch   { --topic: var(--c-branch);   --topic-bg: var(--c-branch-bg); }
+.topic-worktree { --topic: var(--c-worktree); --topic-bg: var(--c-worktree-bg); }
+.topic-pr       { --topic: var(--c-pr);       --topic-bg: var(--c-pr-bg); }
+.topic-conflict { --topic: var(--c-conflict); --topic-bg: var(--c-conflict-bg); }
 
 /* ---------- Base ---------- */
 html { font-size: 16px; }
@@ -536,8 +547,8 @@ code, kbd, samp {
   padding: 0.375rem 0.75rem;
   border-radius: var(--r-pill);
   width: fit-content;
-  background: var(--c-branch-bg);
-  color: var(--c-branch);
+  background: var(--topic-bg);
+  color: var(--topic);
 }
 .page-hero__title {
   font-size: clamp(2rem, 4vw, 2.75rem);
@@ -545,7 +556,7 @@ code, kbd, samp {
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
-.page-hero__title span { color: var(--c-branch); }
+.page-hero__title span { color: var(--topic); }
 .page-hero__lead {
   font-size: clamp(1rem, 1.6vw, 1.125rem);
   color: var(--ink-soft);
@@ -605,8 +616,8 @@ code, kbd, samp {
   width: 32px;
   height: 32px;
   border-radius: var(--r-sm);
-  background: var(--c-branch-bg);
-  color: var(--c-branch);
+  background: var(--topic-bg);
+  color: var(--topic);
   font-size: 1rem;
   font-weight: 700;
   margin-right: var(--sp-3);
@@ -644,7 +655,7 @@ code, kbd, samp {
   top: 0.7em;
   width: 6px;
   height: 6px;
-  background: var(--c-branch);
+  background: var(--topic);
   border-radius: 50%;
 }
 
@@ -683,8 +694,8 @@ code, kbd, samp {
 .callout__text { font-size: 0.875rem; color: var(--ink-soft); line-height: 1.7; }
 .callout--warn { border-left-color: var(--c-conflict); }
 .callout--warn .callout__icon { background: var(--c-conflict-bg); color: var(--c-conflict); }
-.callout--ok { border-left-color: var(--c-branch); }
-.callout--ok .callout__icon { background: var(--c-branch-bg); color: var(--c-branch); }
+.callout--ok { border-left-color: var(--topic); }
+.callout--ok .callout__icon { background: var(--topic-bg); color: var(--topic); }
 
 /* metaphor box */
 .metaphor {
@@ -789,7 +800,7 @@ code, kbd, samp {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--c-branch);
+  background: var(--topic);
   color: white;
   display: grid;
   place-items: center;
@@ -869,23 +880,6 @@ code, kbd, samp {
   cursor: not-allowed;
   pointer-events: none;
 }
-
-/* ==========================================================================
-   Topic variants (conflict)
-   ========================================================================== */
-
-.page-hero--conflict .page-hero__tag {
-  background: var(--c-conflict-bg);
-  color: var(--c-conflict);
-}
-.page-hero--conflict .page-hero__title span { color: var(--c-conflict); }
-
-.content--conflict h2 .num {
-  background: var(--c-conflict-bg);
-  color: var(--c-conflict);
-}
-.content--conflict ul.bullets li::before { background: var(--c-conflict); }
-.content--conflict .step__num { background: var(--c-conflict); }
 
 /* ==========================================================================
    Conflict marker block (terminal-like view)
@@ -1023,6 +1017,76 @@ code, kbd, samp {
   text-transform: uppercase;
   color: var(--ink-mute);
 }
+
+/* ==========================================================================
+   PR ページ専用コンポーネント
+   ========================================================================== */
+
+/* 模擬 PR カード */
+.pr-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin: var(--sp-6) 0;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.pr-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+  background: var(--surface-muted);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.pr-card__status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0.25rem 0.625rem;
+  background: var(--c-pr-bg);
+  color: var(--c-pr);
+  border-radius: var(--r-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.pr-card__status::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c-pr);
+}
+.pr-card__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.pr-card__meta {
+  font-size: 0.75rem;
+  color: var(--ink-mute);
+  font-family: var(--font-mono);
+}
+.pr-card__body {
+  padding: var(--sp-5);
+  display: grid;
+  gap: var(--sp-4);
+}
+.pr-card__field {
+  display: grid;
+  gap: var(--sp-1);
+}
+.pr-card__field-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
 .compare__label .dot {
   width: 8px;
   height: 8px;
@@ -1101,6 +1165,74 @@ code, kbd, samp {
 .line-compare__file-row.is-their .txt { color: var(--c-pr); font-weight: 700; }
 .line-compare__verdict { font-size: 0.8125rem; color: var(--ink-soft); line-height: 1.7; }
 .line-compare__verdict strong { color: var(--ink); }
+
+.pr-card__field-value {
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+  line-height: 1.75;
+}
+.pr-card__field-value strong { color: var(--ink); font-weight: 700; }
+
+/* レビューでやり取りされるコメント風ブロック */
+.review-thread {
+  display: grid;
+  gap: var(--sp-4);
+  margin: var(--sp-6) 0;
+}
+.review-comment {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--sp-3);
+  align-items: start;
+}
+.review-comment__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  color: white;
+  background: var(--c-pr);
+  flex-shrink: 0;
+}
+.review-comment--author .review-comment__avatar { background: var(--c-branch); }
+.review-comment__body {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-3) var(--sp-4);
+}
+.review-comment__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: 0.75rem;
+  color: var(--ink-mute);
+  margin-bottom: var(--sp-1);
+  flex-wrap: wrap;
+}
+.review-comment__name { font-weight: 700; color: var(--ink); }
+.review-comment__tag {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--r-sm);
+  background: var(--c-pr-bg);
+  color: var(--c-pr);
+}
+.review-comment__tag--approved {
+  background: var(--c-branch-bg);
+  color: var(--c-branch);
+}
+.review-comment__text {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+.review-comment__text strong { color: var(--ink); }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 960px) {

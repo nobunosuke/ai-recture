@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="プルリクエスト（Pull Request）の基本。ブランチの変更を main に取り込む前にレビューしてもらう、提案書としての役割を図解で理解する。">
+  <title>Pull Request — 取り込む前に、見てもらう｜Git の歩き方</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700;800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-pr">
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="index.html">
+        <span class="brand__mark">G</span>
+        <span class="brand__title">Git の歩き方</span>
+        <span class="brand__sub">— 5つの言葉で覚える、毎日の流れ</span>
+      </a>
+      <nav class="nav" aria-label="主要セクション">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html#flow">全体の流れ</a></li>
+          <li><a class="nav__link" href="index.html#why">なぜ学ぶ?</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <nav class="crumb" aria-label="パンくず">
+        <a href="index.html">ホーム</a>
+        <span class="crumb__sep">/</span>
+        <span class="crumb__current">Pull Request（プルリクエスト）</span>
+      </nav>
+    </div>
+
+    <!-- Page hero -->
+    <section class="page-hero">
+      <div class="container page-hero__inner">
+        <span class="page-hero__tag">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><line x1="6" y1="9" x2="6" y2="15"/><path d="M15 6h2a2 2 0 0 1 2 2v7"/></svg>
+          STEP 04 ／ PULL REQUEST
+        </span>
+        <h1 class="page-hero__title"><span>Pull Request</span> — 取り込む前に、<br>見てもらう。</h1>
+        <p class="page-hero__lead">
+          ブランチで作った変更を、いきなり main に流し込むのではなく、
+          「<strong>この変更を取り込んでください</strong>」と依頼する。
+          PR は、提案書とレビューの場を兼ねた、チーム開発の合流地点だ。
+        </p>
+      </div>
+    </section>
+
+    <!-- Body -->
+    <section class="page-body">
+      <div class="container page-grid">
+        <!-- TOC sidebar -->
+        <aside class="toc" aria-label="目次">
+          <div class="toc__title">CONTENTS</div>
+          <ul class="toc__list">
+            <li><a class="toc__link" href="#one-line">1. 一言で言うと</a></li>
+            <li><a class="toc__link" href="#why">2. なぜ必要なのか</a></li>
+            <li><a class="toc__link" href="#diagram">3. 図で見る動き</a></li>
+            <li><a class="toc__link" href="#flow">4. 実際の流れ</a></li>
+            <li><a class="toc__link" href="#writing">5. タイトルと本文の書き方</a></li>
+            <li><a class="toc__link" href="#summary">6. まとめ</a></li>
+          </ul>
+        </aside>
+
+        <!-- Main content -->
+        <article class="content">
+
+          <!-- 1. 一言で言うと -->
+          <section id="one-line">
+            <h2><span class="num">1</span>一言で言うと</h2>
+            <p class="lead">
+              プルリクエスト（PR）とは、自分のブランチで作った変更を main に取り込むときに、
+              <strong>「取り込んでいいか、見てください」と依頼する提案書</strong>のことだ。
+              レビューを受けてから合流する、これがチーム開発の基本ルートになる。
+            </p>
+            <ul class="bullets">
+              <li><strong>提案書</strong>として、何を・なぜ変えたかを残せる。</li>
+              <li><strong>レビューの場</strong>として、他の人がコメント・指摘できる。</li>
+              <li><strong>取り込みボタン</strong>として、承認後ワンクリックで main に統合できる。</li>
+            </ul>
+          </section>
+
+          <!-- 2. なぜ必要 -->
+          <section id="why">
+            <h2><span class="num">2</span>なぜ必要なのか</h2>
+            <p>
+              もし PR がなく、誰でも自分のブランチを直接 main に上書きできたとしたらどうなる？
+              <strong>誰が、いつ、なぜ変えたかが分からない</strong>。間違いに気づける人もいない。
+              気付いたときには「動かないコードが本番に入っていた」という事故が起きる。
+            </p>
+            <p>
+              PR は、その手前に「<strong>説明と確認のフェーズ</strong>」を挟む仕組みだ。
+              ブランチで作業した本人が変更の意図を書き、レビュアーが内容を見て、議論する。
+              納得できたら統合する。<strong>記録と判断が同じ場所に残る</strong>ところが本質だ。
+            </p>
+
+            <div class="metaphor">
+              <div class="metaphor-card metaphor-card--bad">
+                <span class="metaphor-card__label"><span class="dot"></span>PR を使わないと</span>
+                <h4>本番に直接、無言で書き込む</h4>
+                <p>変更の意図も経緯も残らない。間違いがあっても誰も止められず、後から原因を追えない。</p>
+              </div>
+              <div class="metaphor-card metaphor-card--good">
+                <span class="metaphor-card__label"><span class="dot"></span>PR を使うと</span>
+                <h4>提案 → レビュー → 取り込み</h4>
+                <p>変更の理由が文章で残り、第三者の目が入る。決裁書のように記録と判断がセットで残る。</p>
+              </div>
+            </div>
+
+            <div class="callout">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">名前は「Pull（取り込み）の Request（依頼）」</div>
+                <p class="callout__text">
+                  自分が書き込むのではなく、「本体側から自分のブランチを<strong>取り込んで（pull）</strong>ください」と
+                  依頼する形式だから "Pull Request" と呼ぶ。主語が逆になっているのがポイント。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. 図で見る動き -->
+          <section id="diagram">
+            <h2><span class="num">3</span>図で見る動き</h2>
+            <p>
+              ブランチで積み上げたコミットを、レビューを通してから main に合流させる。
+              <strong>commit → PR → review → approve → merge</strong> の流れを横長で見ていく。
+            </p>
+
+            <figure class="diagram">
+              <header class="diagram__head">
+                <span class="diagram__title">PR を開いて、レビューを経てマージするまで</span>
+                <div class="diagram__legend">
+                  <span class="diagram__legend-item"><span class="dot" style="background:#0F172A"></span>main（本番）</span>
+                  <span class="diagram__legend-item"><span class="dot" style="background:#059669"></span>summer-campaign（作業ブランチ）</span>
+                  <span class="diagram__legend-item"><span class="dot" style="background:#2563EB"></span>レビュー／PR の動き</span>
+                </div>
+              </header>
+
+              <div class="diagram__svg-wrap">
+                <svg viewBox="-120 0 1000 360" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="ブランチに commit を積み、PR を開いてレビューを経て main にマージするまでの流れ">
+                  <defs>
+                    <marker id="arrow-pr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                      <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+                    </marker>
+                    <marker id="arrow-merge" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+                      <path d="M0,0 L10,5 L0,10 z" fill="#2563EB"/>
+                    </marker>
+                  </defs>
+
+                  <!-- main line -->
+                  <line x1="60" y1="100" x2="820" y2="100" stroke="#0F172A" stroke-width="3" stroke-linecap="round"/>
+                  <!-- branch line -->
+                  <line x1="240" y1="240" x2="680" y2="240" stroke="#059669" stroke-width="3" stroke-linecap="round"/>
+
+                  <!-- branch out -->
+                  <path d="M200,100 C220,100 220,240 240,240" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round"/>
+                  <!-- merge in -->
+                  <path d="M680,240 C700,240 700,100 720,100" fill="none" stroke="#2563EB" stroke-width="3" stroke-linecap="round"/>
+
+                  <!-- main commits -->
+                  <g>
+                    <circle cx="120" cy="100" r="9" fill="#FFFFFF" stroke="#0F172A" stroke-width="3"/>
+                    <text x="120" y="78" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#475569">A</text>
+
+                    <circle cx="200" cy="100" r="9" fill="#FFFFFF" stroke="#0F172A" stroke-width="3"/>
+                    <text x="200" y="78" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#475569">B</text>
+
+                    <circle cx="740" cy="100" r="12" fill="#2563EB" stroke="#2563EB" stroke-width="3"/>
+                    <text x="740" y="76" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#1E40AF">merge!</text>
+
+                    <circle cx="810" cy="100" r="9" fill="#FFFFFF" stroke="#0F172A" stroke-width="3"/>
+                    <text x="810" y="78" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#475569">C</text>
+                  </g>
+
+                  <!-- branch commits -->
+                  <g>
+                    <circle cx="300" cy="240" r="9" fill="#FFFFFF" stroke="#059669" stroke-width="3"/>
+                    <text x="300" y="266" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#475569">a</text>
+
+                    <circle cx="380" cy="240" r="9" fill="#FFFFFF" stroke="#059669" stroke-width="3"/>
+                    <text x="380" y="266" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#475569">b</text>
+
+                    <!-- PR open marker -->
+                    <circle cx="460" cy="240" r="12" fill="#2563EB" stroke="#2563EB" stroke-width="3"/>
+                    <text x="460" y="266" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#1E40AF">PR open</text>
+
+                    <!-- review fix commit -->
+                    <circle cx="600" cy="240" r="9" fill="#FFFFFF" stroke="#059669" stroke-width="3"/>
+                    <text x="600" y="266" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#475569">fix (review対応)</text>
+
+                    <!-- approved marker -->
+                    <circle cx="670" cy="240" r="9" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+                    <text x="670" y="266" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#1E40AF">approved</text>
+                  </g>
+
+                  <!-- labels -->
+                  <text x="40" y="105" text-anchor="end" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#0F172A">main</text>
+                  <text x="40" y="245" text-anchor="end" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#059669">summer-<tspan x="40" dy="14">campaign</tspan></text>
+
+                  <!-- callout: PR を開く -->
+                  <g>
+                    <rect x="380" y="150" width="160" height="44" rx="8" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+                    <text x="460" y="168" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#1E40AF">① PR を開く</text>
+                    <text x="460" y="184" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#1E40AF">「取り込んでください」と依頼</text>
+                  </g>
+
+                  <!-- callout: review fix -->
+                  <g>
+                    <rect x="530" y="150" width="160" height="44" rx="8" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+                    <text x="610" y="168" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#5B21B6">② レビュー→修正</text>
+                    <text x="610" y="184" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#5B21B6">指摘に答えてコミット追加</text>
+                  </g>
+
+                  <!-- callout: merge -->
+                  <g>
+                    <rect x="650" y="40" width="170" height="44" rx="8" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+                    <text x="735" y="58" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#1E40AF">③ Approve → Merge</text>
+                    <text x="735" y="74" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#1E40AF">main に取り込んで完了</text>
+                  </g>
+
+                  <!-- time axis -->
+                  <line x1="60" y1="330" x2="820" y2="330" stroke="#CBD5E1" stroke-width="1.5" marker-end="url(#arrow-pr)"/>
+                  <text x="60" y="348" text-anchor="start" font-family="Inter, sans-serif" font-size="11" fill="#94A3B8">時間の流れ</text>
+                </svg>
+              </div>
+
+              <figcaption class="diagram__caption">
+                ブランチで作業した後、PR を開いてレビュアーに見てもらい、指摘を反映してから main に合流する。
+              </figcaption>
+            </figure>
+
+            <div class="callout">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">PR は「ブランチに紐づいた、議論の入れ物」</div>
+                <p class="callout__text">
+                  PR を開いた後にコミットを追加すると、その PR の中に自動で積まれていく。
+                  別の場所に移動するわけではない。<strong>ブランチ＝作業、PR＝その作業に対する説明と議論</strong>と考えるとよい。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4. 実際の流れ -->
+          <section id="flow">
+            <h2><span class="num">4</span>実際の流れ</h2>
+            <p>
+              ブランチ <code>summer-campaign</code> で資料を更新した、という例で見てみよう。
+            </p>
+
+            <div class="steps">
+              <div class="step">
+                <span class="step__num">1</span>
+                <div class="step__body">
+                  <h4>ブランチで作業し、コミットを push する</h4>
+                  <p>編集して、変更を <code>commit</code> してから GitHub に <code>push</code> する。これで PR を開ける状態になる。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">2</span>
+                <div class="step__body">
+                  <h4>GitHub で「New Pull Request」を開く</h4>
+                  <p>取り込み先（main）と、取り込み元（summer-campaign）を選ぶ。差分が自動で表示される。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">3</span>
+                <div class="step__body">
+                  <h4>タイトルと本文を書く</h4>
+                  <p>「何を変えたか」「なぜ変えたか」「どう確認したか」を簡潔に書く。これがレビュアーの最初の手がかりになる。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">4</span>
+                <div class="step__body">
+                  <h4>レビュアーを指定して依頼する</h4>
+                  <p>誰に見てほしいかを指定。レビュアーは差分を見て、コメントや指摘を残してくれる。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">5</span>
+                <div class="step__body">
+                  <h4>指摘に対応して、追加コミットを積む</h4>
+                  <p>修正が必要なら、同じブランチで commit & push。PR は自動で追従するので、再依頼の操作はいらない。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">6</span>
+                <div class="step__body">
+                  <h4>Approve されたら「Merge」する</h4>
+                  <p>レビュアーが承認したら、Merge ボタンで main に取り込み。ブランチはそのまま削除して片付ける。</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 模擬 PR カード -->
+            <h3>実際の PR は、こんな見た目をしている</h3>
+            <p>
+              GitHub 上の PR は、ヘッダー（状態とタイトル）と本文（説明）でできている。
+              <strong>本文はテンプレ通りに書けば、レビュアーが迷わない</strong>。
+            </p>
+
+            <div class="pr-card" aria-label="PR の見た目イメージ">
+              <div class="pr-card__head">
+                <span class="pr-card__status">OPEN</span>
+                <span class="pr-card__title">夏キャンペーン用にヒーローのコピーを差し替える</span>
+                <span class="pr-card__meta">#42 ・ summer-campaign → main</span>
+              </div>
+              <div class="pr-card__body">
+                <div class="pr-card__field">
+                  <div class="pr-card__field-label">何を（What）</div>
+                  <div class="pr-card__field-value">トップページのヒーローキャッチを夏キャンペーン用の文言に差し替え、CTA ボタンの色を季節色に調整した。</div>
+                </div>
+                <div class="pr-card__field">
+                  <div class="pr-card__field-label">なぜ（Why）</div>
+                  <div class="pr-card__field-value">7/1 開始のキャンペーンに合わせて、トップを訪れたユーザーがすぐ気付ける見せ方にするため。マーケから依頼あり。</div>
+                </div>
+                <div class="pr-card__field">
+                  <div class="pr-card__field-label">どう確認したか（How）</div>
+                  <div class="pr-card__field-value">ローカルで表示確認 (Chrome / Safari)、スマホ幅でも崩れないことをチェック済み。</div>
+                </div>
+              </div>
+            </div>
+
+            <h3>レビュアーとのやりとり</h3>
+            <p>
+              PR のコメント欄では、ブランチ上のコードに対して具体的な指摘ができる。
+              <strong>「ここ、こうしたほうがいいかも」「OK！」</strong>のやり取りがそのまま記録に残る。
+            </p>
+
+            <div class="review-thread">
+              <div class="review-comment">
+                <div class="review-comment__avatar">R</div>
+                <div class="review-comment__body">
+                  <div class="review-comment__meta">
+                    <span class="review-comment__name">reviewer</span>
+                    <span class="review-comment__tag">レビュー</span>
+                    <span>3分前</span>
+                  </div>
+                  <div class="review-comment__text">
+                    コピーいいですね。<strong>CTA の文字色がボタン背景と少し近くて読みにくい</strong>かも。
+                    白に変えるとどうですか？
+                  </div>
+                </div>
+              </div>
+              <div class="review-comment review-comment--author">
+                <div class="review-comment__avatar">A</div>
+                <div class="review-comment__body">
+                  <div class="review-comment__meta">
+                    <span class="review-comment__name">author</span>
+                    <span>2分前</span>
+                  </div>
+                  <div class="review-comment__text">
+                    たしかに！白に変えました。コミット <code>fix: CTA 文字色を白に</code> 追加してあります。
+                  </div>
+                </div>
+              </div>
+              <div class="review-comment">
+                <div class="review-comment__avatar">R</div>
+                <div class="review-comment__body">
+                  <div class="review-comment__meta">
+                    <span class="review-comment__name">reviewer</span>
+                    <span class="review-comment__tag review-comment__tag--approved">Approved</span>
+                    <span>1分前</span>
+                  </div>
+                  <div class="review-comment__text">
+                    バッチリ読めるようになりました。<strong>LGTM、マージしちゃってください</strong>。
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 5. タイトルと本文の書き方 -->
+          <section id="writing">
+            <h2><span class="num">5</span>タイトルと本文の書き方</h2>
+            <p>
+              PR は<strong>後から読み返される</strong>。半年後に「なぜこの変更を入れたんだっけ？」と
+              振り返る相手は、自分かもしれないし、新しく入ったメンバーかもしれない。
+              書き方ひとつで、未来の調査時間が変わる。
+            </p>
+
+            <h3>タイトル：動詞 + 対象で、ひと目で分かるように</h3>
+
+            <div class="metaphor">
+              <div class="metaphor-card metaphor-card--bad">
+                <span class="metaphor-card__label"><span class="dot"></span>避けたいタイトル</span>
+                <h4><code>修正</code> / <code>更新</code> / <code>WIP</code></h4>
+                <p>何のための変更か分からない。一覧で並んだとき、どれが何だったか区別がつかない。</p>
+              </div>
+              <div class="metaphor-card metaphor-card--good">
+                <span class="metaphor-card__label"><span class="dot"></span>分かりやすいタイトル</span>
+                <h4><code>夏キャンペーン用にヒーローのコピーを差し替える</code></h4>
+                <p>何を、どう変えるかが一行で伝わる。レビュアーは中身を開く前に文脈を掴める。</p>
+              </div>
+            </div>
+
+            <h3>本文：3つの問いに答えるだけでいい</h3>
+            <ul class="bullets">
+              <li><strong>What — 何を変えたか</strong>: 変更の中身を 1〜3 行で。差分の要約だ。</li>
+              <li><strong>Why — なぜ変えたか</strong>: 背景・依頼元・解決したい問題。いちばん重要。</li>
+              <li><strong>How — どう確認したか</strong>: 動作チェックの方法。レビュアーが安心できる。</li>
+            </ul>
+
+            <div class="callout callout--ok">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">テンプレートを活用する</div>
+                <p class="callout__text">
+                  リポジトリに PR テンプレート（<code>.github/PULL_REQUEST_TEMPLATE.md</code>）を置いておくと、
+                  PR を開いた瞬間に What / Why / How の見出しが入った状態で始まる。
+                  毎回ゼロから書く負担が消える。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 6. まとめ -->
+          <section id="summary">
+            <h2><span class="num">6</span>まとめ</h2>
+            <p>
+              PR は<strong>「取り込んでください」と依頼する場所</strong>であり、
+              同時にレビュー・議論・記録が積まれていく場所でもある。
+              ブランチで手を動かし、PR で会話する。これがチーム開発のリズムだ。
+            </p>
+
+            <div class="summary">
+              <div class="summary-item">
+                <div class="summary-item__label">できること</div>
+                <div class="summary-item__value">ブランチの変更を「提案」として開き、レビューを経て main に取り込める。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">嬉しいこと</div>
+                <div class="summary-item__value">変更の意図と議論の経緯が記録として残る。後から「なぜこうした？」を辿れる。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">注意点</div>
+                <div class="summary-item__value">レビューなしで自己マージしない。最低でも誰かに目を通してもらう習慣を作る。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">書き方のコツ</div>
+                <div class="summary-item__value">タイトルは「動詞 + 対象」。本文は What / Why / How の 3 つを押さえる。</div>
+              </div>
+            </div>
+
+            <div class="callout callout--ok" style="margin-top: var(--sp-8);">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">3 行で覚えるなら</div>
+                <p class="callout__text">
+                  ① PR は「取り込んでください」とお願いする提案書。
+                  ② 本文は What / Why / How を書けば 8 割 OK。
+                  ③ Approve されてから Merge、そのままブランチは削除。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Pager -->
+          <nav class="pager" aria-label="前後のページ">
+            <a class="pager-link pager-link--disabled" href="#" aria-disabled="true">
+              <span class="pager-link__label">← STEP 03</span>
+              <span class="pager-link__title">Worktree（準備中）</span>
+            </a>
+            <a class="pager-link pager-link--next pager-link--disabled" href="#" aria-disabled="true">
+              <span class="pager-link__label">分岐ルート →</span>
+              <span class="pager-link__title">Conflict（準備中）</span>
+            </a>
+          </nav>
+
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p class="site-footer__copy">© Git の歩き方 — 社内 AI 推進向け教材</p>
+      <nav class="site-footer__nav" aria-label="フッターナビ">
+        <a href="index.html">ホーム</a>
+        <a href="index.html#flow">全体の流れ</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

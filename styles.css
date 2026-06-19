@@ -694,8 +694,8 @@ code, kbd, samp {
 .callout__text { font-size: 0.875rem; color: var(--ink-soft); line-height: 1.7; }
 .callout--warn { border-left-color: var(--c-conflict); }
 .callout--warn .callout__icon { background: var(--c-conflict-bg); color: var(--c-conflict); }
-.callout--ok { border-left-color: var(--c-branch); }
-.callout--ok .callout__icon { background: var(--c-branch-bg); color: var(--c-branch); }
+.callout--ok { border-left-color: var(--topic); }
+.callout--ok .callout__icon { background: var(--topic-bg); color: var(--topic); }
 
 /* metaphor box */
 .metaphor {

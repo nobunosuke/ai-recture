@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Pull（プル）の基本。リモートの最新状態を、自分の手元に取り込む動作を、図解で理解する。">
+  <title>Pull — 最新を、手元に取り込む｜Git の歩き方</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700;800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="page--pull">
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="index.html">
+        <span class="brand__mark">G</span>
+        <span class="brand__title">Git の歩き方</span>
+        <span class="brand__sub">— 言葉と流れで覚える、毎日の地図</span>
+      </a>
+      <nav class="nav" aria-label="主要セクション">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html#flow">作業の流れ</a></li>
+          <li><a class="nav__link" href="index.html#sync">同期</a></li>
+          <li><a class="nav__link" href="index.html#why">なぜ学ぶ?</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <nav class="crumb" aria-label="パンくず">
+        <a href="index.html">ホーム</a>
+        <span class="crumb__sep">/</span>
+        <a href="index.html#sync">同期</a>
+        <span class="crumb__sep">/</span>
+        <span class="crumb__current">Pull（プル）</span>
+      </nav>
+    </div>
+
+    <!-- Page hero -->
+    <section class="page-hero">
+      <div class="container page-hero__inner">
+        <span class="page-hero__tag">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          SYNC ／ PULL
+        </span>
+        <h1 class="page-hero__title"><span>Pull</span> — 最新を、<br>手元に取り込む。</h1>
+        <p class="page-hero__lead">
+          自分が作業している間にも、リモートでは他の人がどんどんコミットしている。
+          <strong>古い状態の上で作業しないため</strong>に、まずリモートの最新を取り込む。それが Pull。
+        </p>
+      </div>
+    </section>
+
+    <!-- Body -->
+    <section class="page-body">
+      <div class="container page-grid">
+        <aside class="toc" aria-label="目次">
+          <div class="toc__title">CONTENTS</div>
+          <ul class="toc__list">
+            <li><a class="toc__link" href="#one-line">1. 一言で言うと</a></li>
+            <li><a class="toc__link" href="#why">2. なぜ必要なのか</a></li>
+            <li><a class="toc__link" href="#diagram">3. 図で見る動き</a></li>
+            <li><a class="toc__link" href="#flow">4. 実際の流れ</a></li>
+            <li><a class="toc__link" href="#tips">5. 注意点</a></li>
+            <li><a class="toc__link" href="#summary">6. まとめ</a></li>
+          </ul>
+        </aside>
+
+        <article class="content">
+
+          <!-- 1. 一言で言うと -->
+          <section id="one-line">
+            <h2><span class="num">1</span>一言で言うと</h2>
+            <p class="lead">
+              Pull とは、<strong>リモートの最新状態を自分の手元に取り込む</strong>動作。
+              他の人の変更を受け取って、自分のローカルを最新に追いつかせる。
+            </p>
+            <ul class="bullets">
+              <li><strong>方向は「リモート → ローカル」</strong>。受け取る動作。</li>
+              <li><strong>作業を始める前と、共有する前</strong> に必ずやる。</li>
+              <li><strong>自分のローカルが新しい状態に追いつく</strong>。逆に自分の変更が消えるわけではない。</li>
+            </ul>
+          </section>
+
+          <!-- 2. なぜ必要 -->
+          <section id="why">
+            <h2><span class="num">2</span>なぜ必要なのか</h2>
+            <p>
+              あなたが昨日 push して帰った後、夜中に同僚が新機能を main にマージした。
+              翌朝、あなたが何もせずに作業を始めたら、<strong>「昨日の状態」の上に積み上げてしまう</strong>。
+              これだと、後で <code>push</code> しようとしたときに「あなたのローカルは古い」と怒られる。
+            </p>
+            <p>
+              Pull は、この<strong>「気付かないうちに古くなる」問題</strong>を防ぐ動作だ。
+              リモートとの差分を取り込んで、ローカルを最新の状態に揃える。これで安心して作業に入れる。
+            </p>
+
+            <div class="metaphor">
+              <div class="metaphor-card metaphor-card--bad">
+                <span class="metaphor-card__label"><span class="dot"></span>pull せずに作業すると</span>
+                <h4>古い土台の上で進めてしまう</h4>
+                <p>他の人が直したバグを、自分が知らずに別の形で直す。push する時に衝突して、後から面倒な調整になる。</p>
+              </div>
+              <div class="metaphor-card metaphor-card--good">
+                <span class="metaphor-card__label"><span class="dot"></span>pull してから作業すると</span>
+                <h4>最新の土台の上で始められる</h4>
+                <p>他の人の変更を踏まえて作業できる。重複や無駄な手戻りが起きにくい。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. 図で見る動き -->
+          <section id="diagram">
+            <h2><span class="num">3</span>図で見る動き</h2>
+            <p>
+              リモートに新しいコミット <strong>D</strong> が追加された状態を想像してほしい。
+              ローカルはまだそれを知らない。<code>git pull</code> を実行すると、D が手元に降りてくる。
+            </p>
+
+            <figure class="diagram">
+              <header class="diagram__head">
+                <span class="diagram__title">pull の動き</span>
+                <div class="diagram__legend">
+                  <span class="diagram__legend-item"><span class="dot" style="background:#0D9488"></span>リモート（GitHub）</span>
+                  <span class="diagram__legend-item"><span class="dot" style="background:#94A3B8"></span>ローカル（自分の PC）</span>
+                </div>
+              </header>
+
+              <div class="diagram__svg-wrap">
+                <svg viewBox="0 0 800 360" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="リモートの新しいコミットが pull でローカルに取り込まれる図">
+                  <defs>
+                    <marker id="arrow-pull" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+                      <path d="M0,0 L10,5 L0,10 z" fill="#0D9488"/>
+                    </marker>
+                  </defs>
+
+                  <!-- Remote box -->
+                  <rect x="40" y="60" width="260" height="240" rx="16" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/>
+                  <text x="170" y="92" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="800" fill="#115E59" letter-spacing="0.04em">GITHUB（リモート）</text>
+                  <text x="170" y="110" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#0F766E">同僚が D を push 済み</text>
+
+                  <!-- Remote commits -->
+                  <g>
+                    <line x1="80" y1="170" x2="260" y2="170" stroke="#0D9488" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+                    <circle cx="90" cy="170" r="9" fill="#FFFFFF" stroke="#0D9488" stroke-width="2.5"/>
+                    <text x="90" y="196" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#115E59">A</text>
+                    <circle cx="150" cy="170" r="9" fill="#FFFFFF" stroke="#0D9488" stroke-width="2.5"/>
+                    <text x="150" y="196" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#115E59">B</text>
+                    <circle cx="210" cy="170" r="9" fill="#FFFFFF" stroke="#0D9488" stroke-width="2.5"/>
+                    <text x="210" y="196" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#115E59">C</text>
+                    <circle cx="270" cy="170" r="11" fill="#0D9488" stroke="#0D9488" stroke-width="2.5"/>
+                    <text x="270" y="196" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#115E59">D</text>
+                    <text x="270" y="148" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#0D9488">NEW</text>
+                  </g>
+                  <text x="170" y="240" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#0F766E">あなたが寝てる間に</text>
+                  <text x="170" y="258" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#0F766E">追加された 1 件</text>
+
+                  <!-- Arrow -->
+                  <path d="M310 180 L490 180" stroke="#0D9488" stroke-width="3" marker-end="url(#arrow-pull)" stroke-linecap="round"/>
+                  <text x="400" y="166" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="#0D9488">git pull</text>
+                  <text x="400" y="200" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#0F766E">差分だけ取り込む</text>
+
+                  <!-- Local box -->
+                  <rect x="500" y="60" width="260" height="240" rx="16" fill="#F5F5F2" stroke="#94A3B8" stroke-width="2"/>
+                  <text x="630" y="92" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="800" fill="#1C1917" letter-spacing="0.04em">あなたの PC（ローカル）</text>
+                  <text x="630" y="110" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#475569">最新（C → D まで）に追いついた</text>
+
+                  <!-- Local commits (with D added after pull) -->
+                  <g>
+                    <line x1="540" y1="170" x2="720" y2="170" stroke="#475569" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+                    <circle cx="550" cy="170" r="9" fill="#FFFFFF" stroke="#475569" stroke-width="2.5"/>
+                    <text x="550" y="196" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#475569">A</text>
+                    <circle cx="610" cy="170" r="9" fill="#FFFFFF" stroke="#475569" stroke-width="2.5"/>
+                    <text x="610" y="196" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#475569">B</text>
+                    <circle cx="670" cy="170" r="9" fill="#FFFFFF" stroke="#475569" stroke-width="2.5"/>
+                    <text x="670" y="196" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#475569">C</text>
+                    <circle cx="730" cy="170" r="11" fill="#0D9488" stroke="#0D9488" stroke-width="2.5"/>
+                    <text x="730" y="196" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#0F766E">D</text>
+                    <text x="730" y="148" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#0D9488">+1</text>
+                  </g>
+                  <text x="630" y="240" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#475569">同じ内容で同期完了</text>
+
+                  <!-- bottom note -->
+                  <rect x="40" y="320" width="720" height="32" rx="8" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
+                  <text x="400" y="340" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#44403C">取り込まれるのは<tspan font-weight="700"> 差分だけ </tspan>。すでに持ってるコミット（A・B・C）は再ダウンロードされない。</text>
+                </svg>
+              </div>
+
+              <figcaption class="diagram__caption">
+                pull は「リモートに増えた分だけ」を取り込む。受け取り側の動作。
+              </figcaption>
+            </figure>
+
+            <div class="callout">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">pull は「fetch + merge」をまとめてやってる</div>
+                <p class="callout__text">
+                  正確には、リモートから情報を取得（fetch）して、それを自分のブランチに統合（merge）する 2 ステップを<strong>一発で</strong>やってくれるのが pull。
+                  最初は深く考えなくて良いが、「2 つの動作をまとめたもの」とだけ覚えておくと、後で疑問が解ける。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4. 実際の流れ -->
+          <section id="flow">
+            <h2><span class="num">4</span>実際の流れ</h2>
+            <p>
+              朝、作業を始めるときの典型的な流れ。
+            </p>
+
+            <div class="steps">
+              <div class="step">
+                <span class="step__num">1</span>
+                <div class="step__body">
+                  <h4>作業フォルダに入る</h4>
+                  <p>ターミナルで <code>cd project</code>。clone 済みのフォルダに移動する。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">2</span>
+                <div class="step__body">
+                  <h4><code>git pull</code> を実行</h4>
+                  <p>リモートと自分のブランチを比べて、足りない分だけ持ってくる。何も無ければ <code>Already up to date.</code> と出る。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">3</span>
+                <div class="step__body">
+                  <h4>差分が表示される</h4>
+                  <p>「○○ファイルが変更されました」とリストが出る。これで何が更新されたか分かる。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">4</span>
+                <div class="step__body">
+                  <h4>そのまま作業開始</h4>
+                  <p>ローカルが最新に揃ったので、安心してブランチを切ったり、編集したりできる。</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 5. 注意点 -->
+          <section id="tips">
+            <h2><span class="num">5</span>注意点</h2>
+            <p>
+              pull は基本的に「降りてくるだけ」だが、状況によっては衝突（Conflict）が起きることもある。
+            </p>
+
+            <div class="metaphor">
+              <div class="metaphor-card metaphor-card--good">
+                <span class="metaphor-card__label"><span class="dot"></span>うまくいくケース</span>
+                <h4>自分のローカルが綺麗な状態</h4>
+                <p>未コミットの変更が無いか、あっても別のファイルなら、pull はすんなり通る。普段はこちらが多数。</p>
+              </div>
+              <div class="metaphor-card metaphor-card--bad">
+                <span class="metaphor-card__label"><span class="dot"></span>つまずくケース</span>
+                <h4>同じ箇所を双方が編集していた</h4>
+                <p>リモートと自分の両方が同じファイルの同じ行を変えていると、Conflict（衝突）が起きる。手で調整が必要。</p>
+              </div>
+            </div>
+
+            <div class="callout callout--warn">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">pull の前に「未保存」を片付けておく</div>
+                <p class="callout__text">
+                  作業途中で <code>pull</code> したいときは、未コミットの変更を先に<strong>コミット</strong> or <strong>退避</strong>（stash）しておくのが安全。
+                  そのまま pull しようとすると「上書きされる可能性があるよ」と Git に止められることがある。
+                </p>
+              </div>
+            </div>
+
+            <div class="callout">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">pull するタイミングは「作業開始前」と「PR 出す前」</div>
+                <p class="callout__text">
+                  この 2 つを習慣にしておけば、ほとんどの衝突は防げる。<strong>朝来たら pull、push する直前にも pull</strong>。これだけ。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 6. まとめ -->
+          <section id="summary">
+            <h2><span class="num">6</span>まとめ</h2>
+            <p>
+              pull は「リモートの最新を、手元に揃える」動作。やる時は意識して、サボらない。
+            </p>
+
+            <div class="summary">
+              <div class="summary-item">
+                <div class="summary-item__label">できること</div>
+                <div class="summary-item__value">リモートの新しいコミットを、自分のローカルに取り込む。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">嬉しいこと</div>
+                <div class="summary-item__value">他の人の変更を踏まえて作業できる。push で衝突するリスクが減る。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">使うタイミング</div>
+                <div class="summary-item__value">作業を始める前、PR を出す前。1 日に複数回やる。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">注意点</div>
+                <div class="summary-item__value">未コミットの変更があると止められることがある。先にコミット or stash。</div>
+              </div>
+            </div>
+
+            <div class="callout callout--ok" style="margin-top: var(--sp-8);">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">3 行で覚えるなら</div>
+                <p class="callout__text">
+                  ① pull は「リモートの最新を取り込む」動作。
+                  ② 作業前と push 直前にやる。
+                  ③ 未保存変更があるなら、先にコミット or stash。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Pager -->
+          <nav class="pager" aria-label="前後のページ">
+            <a class="pager-link" href="clone.html">
+              <span class="pager-link__label">← 前へ</span>
+              <span class="pager-link__title">Clone — 最初の一回</span>
+            </a>
+            <a class="pager-link pager-link--next" href="push.html">
+              <span class="pager-link__label">次へ →</span>
+              <span class="pager-link__title">Push — 変更を送り出す</span>
+            </a>
+          </nav>
+
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p class="site-footer__copy">© Git の歩き方 — 社内 AI 推進向け教材</p>
+      <nav class="site-footer__nav" aria-label="フッターナビ">
+        <a href="index.html">ホーム</a>
+        <a href="index.html#flow">作業の流れ</a>
+        <a href="index.html#sync">同期</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

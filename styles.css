@@ -41,6 +41,16 @@ button { font: inherit; cursor: pointer; border: 0; background: none; color: inh
   --c-pr-bg: #DBEAFE;
   --c-conflict: #DC2626;
   --c-conflict-bg: #FEE2E2;
+  --c-clone: #DB2777;
+  --c-clone-bg: #FCE7F3;
+  --c-pull: #0D9488;
+  --c-pull-bg: #CCFBF1;
+  --c-push: #0891B2;
+  --c-push-bg: #CFFAFE;
+
+  /* page topic (body の .page--xxx で上書き) */
+  --topic: var(--c-branch);
+  --topic-bg: var(--c-branch-bg);
 
   /* radius */
   --r-sm: 8px;
@@ -79,6 +89,12 @@ button { font: inherit; cursor: pointer; border: 0; background: none; color: inh
   /* container */
   --container: 1120px;
 }
+
+/* page topic override */
+.page--branch { --topic: var(--c-branch); --topic-bg: var(--c-branch-bg); }
+.page--clone  { --topic: var(--c-clone);  --topic-bg: var(--c-clone-bg); }
+.page--pull   { --topic: var(--c-pull);   --topic-bg: var(--c-pull-bg); }
+.page--push   { --topic: var(--c-push);   --topic-bg: var(--c-push-bg); }
 
 /* ---------- Base ---------- */
 html { font-size: 16px; }
@@ -400,6 +416,9 @@ code, kbd, samp {
 .flow-card--worktree .flow-card__icon { background: var(--c-worktree-bg); color: var(--c-worktree); }
 .flow-card--pr       .flow-card__icon { background: var(--c-pr-bg); color: var(--c-pr); }
 .flow-card--conflict .flow-card__icon { background: var(--c-conflict-bg); color: var(--c-conflict); }
+.flow-card--clone    .flow-card__icon { background: var(--c-clone-bg);    color: var(--c-clone); }
+.flow-card--pull     .flow-card__icon { background: var(--c-pull-bg);     color: var(--c-pull); }
+.flow-card--push     .flow-card__icon { background: var(--c-push-bg);     color: var(--c-push); }
 
 /* conflict branch */
 .flow__branchpath {
@@ -453,6 +472,64 @@ code, kbd, samp {
   transform: translateX(-50%) rotate(45deg);
   pointer-events: none;
 }
+
+/* ---------- Sync (Local ⇄ Remote) ---------- */
+.flow--sync .flow__track {
+  grid-template-columns: repeat(3, 1fr);
+}
+.flow--sync .flow__connector { display: none; }
+
+/* sync axis legend (ローカル ⇄ リモート の見出し) */
+.sync-axis {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-6);
+  padding: var(--sp-3) var(--sp-5);
+  background: var(--surface-muted);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--r-pill);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-mute);
+}
+.sync-axis__side {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.sync-axis__side svg { width: 14px; height: 14px; }
+.sync-axis__arrows {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  color: var(--ink-soft);
+}
+.sync-axis__arrows svg { width: 12px; height: 12px; }
+
+/* direction tag on sync cards (top-right pill) */
+.flow-card__direction {
+  position: absolute;
+  top: var(--sp-3);
+  right: var(--sp-3);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--r-pill);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.flow-card__direction svg { width: 10px; height: 10px; }
+.flow-card--clone .flow-card__direction { color: var(--c-clone); background: var(--c-clone-bg); }
+.flow-card--pull  .flow-card__direction { color: var(--c-pull);  background: var(--c-pull-bg); }
+.flow-card--push  .flow-card__direction { color: var(--c-push);  background: var(--c-push-bg); }
 
 /* ---------- Story strip ---------- */
 .story {
@@ -536,8 +613,8 @@ code, kbd, samp {
   padding: 0.375rem 0.75rem;
   border-radius: var(--r-pill);
   width: fit-content;
-  background: var(--c-branch-bg);
-  color: var(--c-branch);
+  background: var(--topic-bg);
+  color: var(--topic);
 }
 .page-hero__title {
   font-size: clamp(2rem, 4vw, 2.75rem);
@@ -545,7 +622,7 @@ code, kbd, samp {
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
-.page-hero__title span { color: var(--c-branch); }
+.page-hero__title span { color: var(--topic); }
 .page-hero__lead {
   font-size: clamp(1rem, 1.6vw, 1.125rem);
   color: var(--ink-soft);
@@ -605,8 +682,8 @@ code, kbd, samp {
   width: 32px;
   height: 32px;
   border-radius: var(--r-sm);
-  background: var(--c-branch-bg);
-  color: var(--c-branch);
+  background: var(--topic-bg);
+  color: var(--topic);
   font-size: 1rem;
   font-weight: 700;
   margin-right: var(--sp-3);
@@ -644,7 +721,7 @@ code, kbd, samp {
   top: 0.7em;
   width: 6px;
   height: 6px;
-  background: var(--c-branch);
+  background: var(--topic);
   border-radius: 50%;
 }
 
@@ -683,8 +760,8 @@ code, kbd, samp {
 .callout__text { font-size: 0.875rem; color: var(--ink-soft); line-height: 1.7; }
 .callout--warn { border-left-color: var(--c-conflict); }
 .callout--warn .callout__icon { background: var(--c-conflict-bg); color: var(--c-conflict); }
-.callout--ok { border-left-color: var(--c-branch); }
-.callout--ok .callout__icon { background: var(--c-branch-bg); color: var(--c-branch); }
+.callout--ok { border-left-color: var(--topic); }
+.callout--ok .callout__icon { background: var(--topic-bg); color: var(--topic); }
 
 /* metaphor box */
 .metaphor {
@@ -789,7 +866,7 @@ code, kbd, samp {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--c-branch);
+  background: var(--topic);
   color: white;
   display: grid;
   place-items: center;
@@ -874,6 +951,8 @@ code, kbd, samp {
 @media (max-width: 960px) {
   .flow__track { grid-template-columns: repeat(2, 1fr); }
   .flow__connector { display: none; }
+  .flow--sync .flow__track { grid-template-columns: 1fr; }
+  .sync-axis { flex-direction: column; gap: var(--sp-2); border-radius: var(--r-md); }
   .flow__branchpath { grid-template-columns: 1fr; gap: var(--sp-6); }
   .flow__branchpath-note { grid-column: auto; order: 2; }
   .flow-card.flow-card--conflict { grid-column: auto; order: 1; }

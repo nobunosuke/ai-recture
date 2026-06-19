@@ -882,29 +882,10 @@ code, kbd, samp {
 }
 
 /* ==========================================================================
-   Topic theme: PR (pull-request page)
-   detail page の色を branch (緑) から pr (青) に差し替える
+   PR ページ専用コンポーネント
    ========================================================================== */
-.theme-pr .page-hero__tag {
-  background: var(--c-pr-bg);
-  color: var(--c-pr);
-}
-.theme-pr .page-hero__title span { color: var(--c-pr); }
-.theme-pr .content h2 .num {
-  background: var(--c-pr-bg);
-  color: var(--c-pr);
-}
-.theme-pr .content ul.bullets li::before { background: var(--c-pr); }
-.theme-pr .step__num { background: var(--c-pr); }
-.theme-pr .metaphor-card--good .metaphor-card__label { color: var(--c-pr); }
-.theme-pr .metaphor-card--good { border-color: rgba(37, 99, 235, 0.2); }
-.theme-pr .callout--ok { border-left-color: var(--c-pr); }
-.theme-pr .callout--ok .callout__icon {
-  background: var(--c-pr-bg);
-  color: var(--c-pr);
-}
 
-/* PR ページ用の追加コンポーネント: 模擬 PR カード */
+/* 模擬 PR カード */
 .pr-card {
   background: var(--surface);
   border: 1px solid var(--border);

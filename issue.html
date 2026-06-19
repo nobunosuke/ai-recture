@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="イシュー（Issue）の基本。やることを 1 件ずつカードにして、見える場所に置く考え方を、図解で理解する。">
+  <title>Issue — やることを、1 件ずつ切り出す｜Git の歩き方</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700;800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="topic-issue">
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="index.html">
+        <span class="brand__mark">G</span>
+        <span class="brand__title">Git の歩き方</span>
+        <span class="brand__sub">— 5つの言葉で覚える、毎日の流れ</span>
+      </a>
+      <nav class="nav" aria-label="主要セクション">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html#flow">全体の流れ</a></li>
+          <li><a class="nav__link" href="index.html#why">なぜ学ぶ?</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <nav class="crumb" aria-label="パンくず">
+        <a href="index.html">ホーム</a>
+        <span class="crumb__sep">/</span>
+        <span class="crumb__current">Issue（イシュー）</span>
+      </nav>
+    </div>
+
+    <!-- Page hero -->
+    <section class="page-hero">
+      <div class="container page-hero__inner">
+        <span class="page-hero__tag">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
+          STEP 01 ／ ISSUE
+        </span>
+        <h1 class="page-hero__title"><span>Issue</span> — やることを、<br>1 件ずつ切り出す。</h1>
+        <p class="page-hero__lead">
+          「ちょっとあれやっといて」は、口にした瞬間に消えていく。
+          <strong>イシュー</strong>は、その依頼を 1 枚のカードとして残す仕組みだ。
+          誰が・何を・いつまでに・どうなったら終わりか。形にして見える場所に置く。
+        </p>
+      </div>
+    </section>
+
+    <!-- Body -->
+    <section class="page-body">
+      <div class="container page-grid">
+        <!-- TOC sidebar -->
+        <aside class="toc" aria-label="目次">
+          <div class="toc__title">CONTENTS</div>
+          <ul class="toc__list">
+            <li><a class="toc__link" href="#one-line">1. 一言で言うと</a></li>
+            <li><a class="toc__link" href="#why">2. なぜ必要なのか</a></li>
+            <li><a class="toc__link" href="#anatomy">3. Issue の中身を見る</a></li>
+            <li><a class="toc__link" href="#flow">4. 実際の流れ</a></li>
+            <li><a class="toc__link" href="#tips">5. 良い Issue の書き方</a></li>
+            <li><a class="toc__link" href="#summary">6. まとめ</a></li>
+          </ul>
+        </aside>
+
+        <!-- Main content -->
+        <article class="content">
+
+          <!-- 1. 一言で言うと -->
+          <section id="one-line">
+            <h2><span class="num">1</span>一言で言うと</h2>
+            <p class="lead">
+              Issue とは、<strong>「やること 1 件分のカード」</strong>のことだ。
+              プロジェクトでやるべき作業を 1 つずつ切り出して、見える場所に貼り出すための仕組み。
+            </p>
+            <ul class="bullets">
+              <li><strong>1 件 = 1 タスク</strong>。小さく切って、独立して扱える単位にする。</li>
+              <li><strong>タイトルと本文</strong>で、何をやるか・なぜやるか・どうなったら終わりかを書く。</li>
+              <li><strong>終わったら閉じる（Close）</strong>。やったことが台帳として残り、後から辿れる。</li>
+            </ul>
+          </section>
+
+          <!-- 2. なぜ必要なのか -->
+          <section id="why">
+            <h2><span class="num">2</span>なぜ必要なのか</h2>
+            <p>
+              チャットで「あれ、お願いね」と頼まれた経験はあるはずだ。数日後、相手はもう忘れている。
+              自分も「やった気はするんだけど、ちゃんと終わったんだっけ？」と曖昧になる。
+              <strong>口頭やチャットの依頼は、その場で流れていってしまう</strong>のが普通だ。
+            </p>
+            <p>
+              Issue は、この問題を構造で解決する。依頼を 1 枚のカードにしてしまえば、
+              <strong>「誰の宿題か」「いつ作られたか」「終わったか」</strong>が見える場所に残る。
+              チャットの会話と違って、Issue は閉じるまで消えない。
+            </p>
+
+            <div class="metaphor">
+              <div class="metaphor-card metaphor-card--bad">
+                <span class="metaphor-card__label"><span class="dot"></span>Issue を使わないと</span>
+                <h4>チャットで「あれやっといて」</h4>
+                <p>会話の中に依頼が埋もれる。誰宛か曖昧、完了したかも分からない。1 週間後には全員が忘れている。</p>
+              </div>
+              <div class="metaphor-card metaphor-card--good">
+                <span class="metaphor-card__label"><span class="dot"></span>Issue を使うと</span>
+                <h4>1 件のカードとして起票する</h4>
+                <p>担当・期日・完了条件が 1 か所にまとまる。一覧で「残っている宿題」が見える。終わったら Close。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. Issue の中身を見る -->
+          <section id="anatomy">
+            <h2><span class="num">3</span>Issue の中身を見る</h2>
+            <p>
+              実際の Issue を 1 枚、拡大して中身を見てみよう。下の図は GitHub の Issue を簡略化したもの。
+              <strong>本文（左）</strong>と <strong>メタ情報（右）</strong> の 2 つのエリアに分かれている。
+            </p>
+
+            <figure class="diagram">
+              <header class="diagram__head">
+                <span class="diagram__title">Issue カードの構造（例: 夏のキャンペーン）</span>
+                <div class="diagram__legend">
+                  <span class="diagram__legend-item"><span class="dot" style="background:#D97706"></span>Open（オープン状態）</span>
+                  <span class="diagram__legend-item"><span class="dot" style="background:#78716C"></span>メタ情報</span>
+                </div>
+              </header>
+
+              <div class="diagram__svg-wrap">
+                <svg viewBox="0 0 800 480" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Issue カードの構造を示した図。タイトル・ステータス・本文・メタ情報のエリアに分かれている。">
+                  <!-- card frame -->
+                  <rect x="20" y="20" width="760" height="440" rx="16" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="2"/>
+
+                  <!-- title -->
+                  <text x="48" y="72" font-family="Inter, sans-serif" font-size="22" font-weight="800" fill="#1C1917">夏のキャンペーン用 LP を作る</text>
+
+                  <!-- status row -->
+                  <rect x="48" y="92" width="84" height="28" rx="14" fill="#FEF3C7"/>
+                  <circle cx="64" cy="106" r="5" fill="#D97706"/>
+                  <text x="76" y="111" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#92400E">Open</text>
+                  <text x="144" y="111" font-family="JetBrains Mono, monospace" font-size="13" fill="#78716C">#12 ・ 起票: nobunosuke ・ 2026/06/19</text>
+
+                  <!-- separator -->
+                  <line x1="48" y1="140" x2="752" y2="140" stroke="#E7E5E4" stroke-width="1"/>
+
+                  <!-- callout chip: title label -->
+                  <rect x="566" y="56" width="186" height="28" rx="14" fill="#EEF2FF"/>
+                  <text x="659" y="75" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#312E81">① タイトル（動詞 + 対象）</text>
+
+                  <!-- left column: body -->
+                  <!-- 背景 -->
+                  <text x="48" y="172" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#1C1917" letter-spacing="0.06em">▍ 背景</text>
+                  <text x="48" y="194" font-family="Inter, sans-serif" font-size="13" fill="#44403C">夏のセールが 7/1 から始まる。それまでに告知 LP を用意したい。</text>
+
+                  <!-- やること -->
+                  <text x="48" y="230" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#1C1917" letter-spacing="0.06em">▍ やること</text>
+                  <text x="48" y="252" font-family="Inter, sans-serif" font-size="13" fill="#44403C">・ ヒーロー画像を新キービジュアルに差し替える</text>
+                  <text x="48" y="272" font-family="Inter, sans-serif" font-size="13" fill="#44403C">・ 商品 3 点のセール価格・在庫を反映する</text>
+
+                  <!-- 完了条件 -->
+                  <text x="48" y="308" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#1C1917" letter-spacing="0.06em">▍ 完了条件</text>
+                  <text x="48" y="330" font-family="Inter, sans-serif" font-size="13" fill="#44403C">・ /campaign/summer-2026 でアクセスできる</text>
+                  <text x="48" y="350" font-family="Inter, sans-serif" font-size="13" fill="#44403C">・ 7/1 0:00 から自動公開される設定になっている</text>
+
+                  <!-- body callout -->
+                  <rect x="380" y="290" width="152" height="28" rx="14" fill="#EEF2FF"/>
+                  <text x="456" y="309" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#312E81">② 本文（3 つの段）</text>
+                  <line x1="370" y1="304" x2="340" y2="304" stroke="#A5B4FC" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+                  <!-- vertical separator -->
+                  <line x1="540" y1="172" x2="540" y2="432" stroke="#E7E5E4" stroke-width="1"/>
+
+                  <!-- right column: meta -->
+                  <!-- Assignees -->
+                  <text x="568" y="180" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#78716C" letter-spacing="0.08em">ASSIGNEES</text>
+                  <circle cx="582" cy="208" r="13" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+                  <text x="582" y="213" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#92400E">N</text>
+                  <text x="604" y="213" font-family="Inter, sans-serif" font-size="13" fill="#44403C">nobunosuke</text>
+
+                  <!-- Labels -->
+                  <text x="568" y="260" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#78716C" letter-spacing="0.08em">LABELS</text>
+                  <rect x="568" y="272" width="84" height="22" rx="11" fill="#FEF3C7"/>
+                  <text x="610" y="287" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#92400E">enhancement</text>
+                  <rect x="660" y="272" width="64" height="22" rx="11" fill="#DBEAFE"/>
+                  <text x="692" y="287" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#1E40AF">design</text>
+
+                  <!-- Milestone -->
+                  <text x="568" y="332" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#78716C" letter-spacing="0.08em">MILESTONE</text>
+                  <text x="568" y="356" font-family="Inter, sans-serif" font-size="13" fill="#44403C">夏キャンペーン 2026</text>
+
+                  <!-- Linked PR -->
+                  <text x="568" y="392" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#78716C" letter-spacing="0.08em">LINKED PR</text>
+                  <text x="568" y="416" font-family="JetBrains Mono, monospace" font-size="13" fill="#44403C">#15 まだ無し</text>
+
+                  <!-- meta callout -->
+                  <rect x="572" y="118" width="160" height="28" rx="14" fill="#EEF2FF"/>
+                  <text x="652" y="137" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#312E81">③ メタ情報</text>
+                </svg>
+              </div>
+
+              <figcaption class="diagram__caption">
+                左に「内容」、右に「誰がいつまでに、どんな種類の作業か」のメタ情報。
+                Status が <strong>Open</strong> の間は「まだ終わってない宿題」、Close すれば「終わった台帳」になる。
+              </figcaption>
+            </figure>
+
+            <div class="callout">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">「Open」「Closed」は Issue の唯一の状態</div>
+                <p class="callout__text">
+                  Issue は基本的に <strong>Open（やる予定 / やってる）</strong>か <strong>Closed（終わった）</strong>の 2 つしかない。
+                  「いま誰の手元にあるか」「どこまで進んでいるか」はメタ情報（Assignee や Linked PR）と本文のコメントで補う。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4. 実際の流れ -->
+          <section id="flow">
+            <h2><span class="num">4</span>実際の流れ</h2>
+            <p>
+              起票から Close までを、1 つのキャンペーン作業を例に追ってみる。Issue は <strong>「最初に立てて、最後に閉じる」</strong>のが基本だ。
+            </p>
+
+            <div class="steps">
+              <div class="step">
+                <span class="step__num">1</span>
+                <div class="step__body">
+                  <h4>Issue を起票する</h4>
+                  <p>「夏のキャンペーン用 LP を作る」というタイトルを付けて、背景・やること・完了条件を書く。これで依頼が形になる。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">2</span>
+                <div class="step__body">
+                  <h4>担当（Assignee）を決める</h4>
+                  <p>自分でやるなら自分にアサイン。チームで分担するなら担当者を指定。これで「誰の宿題か」が見える化される。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">3</span>
+                <div class="step__body">
+                  <h4>その Issue を解決する Branch を切る</h4>
+                  <p>Issue 番号（例: <code>#12</code>）を含むブランチ名にすると、後で「どの Issue のための作業か」を辿りやすい。例: <code>12-summer-campaign-lp</code>。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">4</span>
+                <div class="step__body">
+                  <h4>作業して PR を出す</h4>
+                  <p>PR の本文に <code>Closes #12</code> と書いておくと、PR がマージされた瞬間に Issue が自動で Close される。手で閉じる手間が省ける。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">5</span>
+                <div class="step__body">
+                  <h4>Close（自動 or 手動）</h4>
+                  <p>完了。閉じられた Issue は消えるわけではなく、台帳に残る。「あの作業っていつ・誰が・なぜやったんだっけ？」を後から辿れる。</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 5. 良い Issue の書き方 -->
+          <section id="tips">
+            <h2><span class="num">5</span>良い Issue の書き方</h2>
+            <p>
+              半年後の自分や、ジョインしたばかりのメンバーが見て<strong>「何の話か一目で分かる」</strong>のが良い Issue だ。
+              タイトルと本文の書き方で、Issue の質はガラッと変わる。
+            </p>
+
+            <div class="metaphor">
+              <div class="metaphor-card metaphor-card--bad">
+                <span class="metaphor-card__label"><span class="dot"></span>避けたい書き方</span>
+                <h4>「サイト直す」（本文なし）</h4>
+                <p>どこを、なぜ、何が直ったら完了なのかが分からない。1 週間後の自分でも内容を思い出せない。</p>
+              </div>
+              <div class="metaphor-card metaphor-card--good">
+                <span class="metaphor-card__label"><span class="dot"></span>伝わる書き方</span>
+                <h4>「ヘッダーの背景色を白に戻す」</h4>
+                <p>本文に「背景: 先週のリリースで誤って黒に変わった / 完了条件: 全ページのヘッダー背景が <code>#FFFFFF</code> に戻っている」。半年後でも辿れる。</p>
+              </div>
+            </div>
+
+            <p>
+              書くときに意識する 3 つは以下の通り。最低限これだけ揃えば、十分に「動く Issue」になる。
+            </p>
+
+            <ul class="bullets">
+              <li><strong>タイトルは「動詞 + 対象」</strong>。<code>修正</code> や <code>更新</code> のような曖昧な動詞は避け、何をするかを具体的に。</li>
+              <li><strong>本文は「背景 / やること / 完了条件」の 3 段</strong>。なぜ必要かを 1 行、やることを箇条書きで、終わりの定義を 1 行。</li>
+              <li><strong>ラベルで種類を示す</strong>。<code>bug</code>、<code>feature</code>、<code>docs</code> などで色分けすると、一覧で性質がひと目で見える。</li>
+            </ul>
+          </section>
+
+          <!-- 6. まとめ -->
+          <section id="summary">
+            <h2><span class="num">6</span>まとめ</h2>
+            <p>
+              Issue は「やることを 1 件のカードにして、見える場所に置く」仕組み。
+              流れて消える依頼を形にして残すのが本質だ。
+            </p>
+
+            <div class="summary">
+              <div class="summary-item">
+                <div class="summary-item__label">できること</div>
+                <div class="summary-item__value">依頼を 1 件のカードにして、誰が・何を・いつまでに・どうなったら終わりかを残す。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">嬉しいこと</div>
+                <div class="summary-item__value">チャットで流れて消えない。状態が見える。終わったら台帳として残る。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">注意点</div>
+                <div class="summary-item__value">タイトルだけだと薄い。本文に「背景」と「完了条件」を 1 行でいいから書く。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">名前のコツ</div>
+                <div class="summary-item__value">「動詞 + 対象」で、半年後の自分が見て中身を想像できる粒度に。</div>
+              </div>
+            </div>
+
+            <div class="callout callout--ok" style="margin-top: var(--sp-8);">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">3 行で覚えるなら</div>
+                <p class="callout__text">
+                  ① Issue は「やること 1 件分のカード」。
+                  ② 流れて消える依頼を、形にして見える場所に残す。
+                  ③ タイトルは「動詞 + 対象」、本文に「背景」と「完了条件」を 1 行。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Pager -->
+          <nav class="pager" aria-label="前後のページ">
+            <a class="pager-link" href="index.html">
+              <span class="pager-link__label">← STEP 00</span>
+              <span class="pager-link__title">ホーム（全体の流れ）</span>
+            </a>
+            <a class="pager-link pager-link--next" href="branch.html">
+              <span class="pager-link__label">STEP 02 →</span>
+              <span class="pager-link__title">Branch</span>
+            </a>
+          </nav>
+
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p class="site-footer__copy">© Git の歩き方 — 社内 AI 推進向け教材</p>
+      <nav class="site-footer__nav" aria-label="フッターナビ">
+        <a href="index.html">ホーム</a>
+        <a href="index.html#flow">全体の流れ</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ブランチ（Branch）の基本。いまの状態を壊さずに、別バージョンで作業するための分身という考え方を、図解で理解する。">
+  <title>Branch — 壊さずに、別バージョンを試す｜Git の歩き方</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700;800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="index.html">
+        <span class="brand__mark">G</span>
+        <span class="brand__title">Git の歩き方</span>
+        <span class="brand__sub">— 5つの言葉で覚える、毎日の流れ</span>
+      </a>
+      <nav class="nav" aria-label="主要セクション">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html#flow">全体の流れ</a></li>
+          <li><a class="nav__link" href="index.html#why">なぜ学ぶ?</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <nav class="crumb" aria-label="パンくず">
+        <a href="index.html">ホーム</a>
+        <span class="crumb__sep">/</span>
+        <span class="crumb__current">Branch（ブランチ）</span>
+      </nav>
+    </div>
+
+    <!-- Page hero -->
+    <section class="page-hero">
+      <div class="container page-hero__inner">
+        <span class="page-hero__tag">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+          STEP 02 ／ BRANCH
+        </span>
+        <h1 class="page-hero__title"><span>Branch</span> — 壊さずに、<br>別バージョンを試す。</h1>
+        <p class="page-hero__lead">
+          「今のままの版は残したい。でも、別パターンも試してみたい。」
+          そんなときに使うのが <strong>ブランチ</strong>。本番の版を傷つけずに、横で自由に試せる仕組みだ。
+        </p>
+      </div>
+    </section>
+
+    <!-- Body -->
+    <section class="page-body">
+      <div class="container page-grid">
+        <!-- TOC sidebar -->
+        <aside class="toc" aria-label="目次">
+          <div class="toc__title">CONTENTS</div>
+          <ul class="toc__list">
+            <li><a class="toc__link" href="#one-line">1. 一言で言うと</a></li>
+            <li><a class="toc__link" href="#why">2. なぜ必要なのか</a></li>
+            <li><a class="toc__link" href="#diagram">3. 図で見る動き</a></li>
+            <li><a class="toc__link" href="#flow">4. 実際の流れ</a></li>
+            <li><a class="toc__link" href="#tips">5. 名前のつけ方</a></li>
+            <li><a class="toc__link" href="#summary">6. まとめ</a></li>
+          </ul>
+        </aside>
+
+        <!-- Main content -->
+        <article class="content">
+
+          <!-- 1. 一言で言うと -->
+          <section id="one-line">
+            <h2><span class="num">1</span>一言で言うと</h2>
+            <p class="lead">
+              ブランチとは、いまの作業状態をまるごとコピーした<strong>「もう 1 つの作業場所」</strong>のことだ。
+              本体（main）はそのまま残り、横にもう一本、自由に編集できる版ができる。
+            </p>
+            <ul class="bullets">
+              <li><strong>本番（main）を壊さない</strong>。失敗しても本体には影響しない。</li>
+              <li><strong>並行で進められる</strong>。複数のアイデアを同時に試せる。</li>
+              <li><strong>気に入れば取り込み、気に入らなければ捨てる</strong>。後始末も簡単。</li>
+            </ul>
+          </section>
+
+          <!-- 2. なぜ必要 -->
+          <section id="why">
+            <h2><span class="num">2</span>なぜ必要なのか</h2>
+            <p>
+              チーム作業を想像してほしい。同じ Word ファイルを、2 人が同時に開いて編集したらどうなる？
+              片方の保存が、もう片方の編集を上書きしてしまう。<strong>「あれ、私が書いた箇所が消えてる」</strong>という事故だ。
+            </p>
+            <p>
+              ブランチは、この問題を構造で解決する。
+              <strong>一人ひとりが自分専用の作業場所を持ち、最後に合流する</strong>。
+              編集中はぶつからない。合流のときだけ、Git が「ここ重なってますよ」と教えてくれる。
+            </p>
+
+            <div class="metaphor">
+              <div class="metaphor-card metaphor-card--bad">
+                <span class="metaphor-card__label"><span class="dot"></span>ブランチを使わないと</span>
+                <h4>同じ場所で全員が編集する</h4>
+                <p>誰かが保存するたびに他の人の編集が消えるリスク。誰がいつ何を変えたかも分からない。</p>
+              </div>
+              <div class="metaphor-card metaphor-card--good">
+                <span class="metaphor-card__label"><span class="dot"></span>ブランチを使うと</span>
+                <h4>各自の「作業用コピー」で進める</h4>
+                <p>本体は触らず、自分のコピーで自由に編集。完成したら本体に統合する。誰の変更も消えない。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. 図で見る動き -->
+          <section id="diagram">
+            <h2><span class="num">3</span>図で見る動き</h2>
+            <p>
+              左から右へ時間が流れる図。<strong>上の線が本番（main）</strong>、<strong>下の線が試す用のブランチ</strong>。
+              枝分かれして、それぞれで作業を進め、最後に本体へ統合される。
+            </p>
+
+            <figure class="diagram">
+              <header class="diagram__head">
+                <span class="diagram__title">ブランチの分岐と統合</span>
+                <div class="diagram__legend">
+                  <span class="diagram__legend-item"><span class="dot" style="background:#0F172A"></span>main（本番）</span>
+                  <span class="diagram__legend-item"><span class="dot" style="background:#059669"></span>summer-campaign（試す用）</span>
+                  <span class="diagram__legend-item"><span class="dot" style="background:#94A3B8;outline:2px solid #94A3B8"></span>commit（保存点）</span>
+                </div>
+              </header>
+
+              <div class="diagram__svg-wrap">
+                <svg viewBox="-120 0 1000 340" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="main ブランチから summer-campaign ブランチが分岐し、再び統合される図">
+                  <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                      <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+                    </marker>
+                  </defs>
+
+                  <!-- main line -->
+                  <line x1="60" y1="100" x2="820" y2="100" stroke="#0F172A" stroke-width="3" stroke-linecap="round"/>
+                  <!-- branch line -->
+                  <line x1="240" y1="240" x2="640" y2="240" stroke="#059669" stroke-width="3" stroke-linecap="round"/>
+
+                  <!-- branch out (curve) -->
+                  <path d="M200,100 C220,100 220,240 240,240" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round"/>
+                  <!-- merge in (curve) -->
+                  <path d="M640,240 C660,240 660,100 680,100" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round"/>
+
+                  <!-- main commits -->
+                  <g>
+                    <circle cx="120" cy="100" r="9" fill="#FFFFFF" stroke="#0F172A" stroke-width="3"/>
+                    <text x="120" y="78" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#475569">A</text>
+
+                    <circle cx="200" cy="100" r="9" fill="#FFFFFF" stroke="#0F172A" stroke-width="3"/>
+                    <text x="200" y="78" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#475569">B</text>
+
+                    <circle cx="500" cy="100" r="9" fill="#FFFFFF" stroke="#0F172A" stroke-width="3"/>
+                    <text x="500" y="78" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#475569">C</text>
+
+                    <circle cx="700" cy="100" r="11" fill="#0F172A" stroke="#0F172A" stroke-width="3"/>
+                    <text x="700" y="76" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#0F172A" font-weight="700">D (merge)</text>
+
+                    <circle cx="790" cy="100" r="9" fill="#FFFFFF" stroke="#0F172A" stroke-width="3"/>
+                    <text x="790" y="78" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#475569">E</text>
+                  </g>
+
+                  <!-- branch commits -->
+                  <g>
+                    <circle cx="320" cy="240" r="9" fill="#FFFFFF" stroke="#059669" stroke-width="3"/>
+                    <text x="320" y="266" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#475569">a</text>
+
+                    <circle cx="430" cy="240" r="9" fill="#FFFFFF" stroke="#059669" stroke-width="3"/>
+                    <text x="430" y="266" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#475569">b</text>
+
+                    <circle cx="540" cy="240" r="9" fill="#FFFFFF" stroke="#059669" stroke-width="3"/>
+                    <text x="540" y="266" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#475569">c</text>
+
+                    <circle cx="630" cy="240" r="9" fill="#FFFFFF" stroke="#059669" stroke-width="3"/>
+                    <text x="630" y="266" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#475569">d</text>
+                  </g>
+
+                  <!-- labels -->
+                  <text x="40" y="105" text-anchor="end" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#0F172A">main</text>
+                  <text x="40" y="245" text-anchor="end" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#059669">summer-<tspan x="40" dy="14">campaign</tspan></text>
+
+                  <!-- callouts -->
+                  <g>
+                    <rect x="160" y="148" width="120" height="40" rx="8" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+                    <text x="220" y="165" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#5B21B6">① ここで分岐</text>
+                    <text x="220" y="180" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#5B21B6">ブランチを切る</text>
+
+                    <rect x="620" y="148" width="120" height="40" rx="8" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+                    <text x="680" y="165" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#1E40AF">② ここで統合</text>
+                    <text x="680" y="180" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#1E40AF">main に取り込む（merge）</text>
+                  </g>
+
+                  <!-- time axis -->
+                  <line x1="60" y1="310" x2="820" y2="310" stroke="#CBD5E1" stroke-width="1.5" marker-end="url(#arrow)"/>
+                  <text x="60" y="328" text-anchor="start" font-family="Inter, sans-serif" font-size="11" fill="#94A3B8">時間の流れ</text>
+                </svg>
+              </div>
+
+              <figcaption class="diagram__caption">
+                main で作業を続けながら、その間 <code>summer-campaign</code> でも別作業ができる。
+                両方の編集は混ざらずに進み、最後に統合される。
+              </figcaption>
+            </figure>
+
+            <div class="callout">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">main（メイン）は「いつでも動く本番の版」</div>
+                <p class="callout__text">
+                  プロジェクトに必ず 1 本だけある「正式な版」。これは常に「壊れていない状態」を保つのが原則だ。
+                  だから直接編集せず、ブランチで作って統合する流れになっている。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4. 実際の流れ -->
+          <section id="flow">
+            <h2><span class="num">4</span>実際の流れ</h2>
+            <p>
+              夏のキャンペーン用に資料を更新する、という例で見てみよう。
+            </p>
+
+            <div class="steps">
+              <div class="step">
+                <span class="step__num">1</span>
+                <div class="step__body">
+                  <h4>main から枝分かれする</h4>
+                  <p>「<code>summer-campaign</code>」という名前で新しいブランチを切る。main の今の状態がそのままコピーされる。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">2</span>
+                <div class="step__body">
+                  <h4>自分のブランチで自由に編集</h4>
+                  <p>キャッチコピー、ビジュアル、構成。main を気にせず、思いついたことを全部試す。失敗しても本体は無傷だ。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">3</span>
+                <div class="step__body">
+                  <h4>うまくいったら main に取り込む</h4>
+                  <p>「マージ（merge）」と呼ぶ操作で、ブランチの変更を本体に反映する。これ以降、main にもキャンペーン版が乗る。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">4</span>
+                <div class="step__body">
+                  <h4>うまくいかなかったら、ブランチを捨てる</h4>
+                  <p>気に入らなければ、ブランチごと削除すれば終わり。main は最初の状態のまま、何事もなかったように残る。</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 5. 名前のつけ方 -->
+          <section id="tips">
+            <h2><span class="num">5</span>名前のつけ方</h2>
+            <p>
+              ブランチ名は「何のための作業か」が一目で分かるようにする。
+              他の人（半年後の自分も含む）が見て、中身が想像できる名前が良い名前だ。
+            </p>
+
+            <div class="metaphor">
+              <div class="metaphor-card metaphor-card--bad">
+                <span class="metaphor-card__label"><span class="dot"></span>避けたい名前</span>
+                <h4><code>test</code> / <code>tmp</code> / <code>new-1</code></h4>
+                <p>何のための作業か分からない。複数できると、どれが何だったか自分でも忘れる。</p>
+              </div>
+              <div class="metaphor-card metaphor-card--good">
+                <span class="metaphor-card__label"><span class="dot"></span>分かりやすい名前</span>
+                <h4><code>summer-campaign-2026</code> / <code>fix-typo-in-hero</code></h4>
+                <p>誰が見ても「あ、これね」と分かる。チームでも自分でも、迷子にならない。</p>
+              </div>
+            </div>
+
+            <p>
+              迷ったら「<strong>動詞 + 対象</strong>」のパターンが使いやすい。<code>add-pricing-section</code>、<code>fix-login-error</code> のように。
+            </p>
+          </section>
+
+          <!-- 6. まとめ -->
+          <section id="summary">
+            <h2><span class="num">6</span>まとめ</h2>
+            <p>
+              ブランチは「壊さずに試す」ための仕組み。本番（main）を傷つけずに、横で自由に編集できる作業場所を作るのが本質だ。
+            </p>
+
+            <div class="summary">
+              <div class="summary-item">
+                <div class="summary-item__label">できること</div>
+                <div class="summary-item__value">本番を壊さず、別バージョンを横で試す。気に入れば取り込み、気に入らなければ捨てる。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">嬉しいこと</div>
+                <div class="summary-item__value">複数人が同時に動いても、上書き合戦が起きない。並行作業ができる。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">注意点</div>
+                <div class="summary-item__value">合流（merge）のとき、同じ箇所をお互いに編集していると Conflict が起きることがある。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">名前のコツ</div>
+                <div class="summary-item__value">「動詞 + 対象」で、半年後の自分が見ても分かる名前にする。</div>
+              </div>
+            </div>
+
+            <div class="callout callout--ok" style="margin-top: var(--sp-8);">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">3 行で覚えるなら</div>
+                <p class="callout__text">
+                  ① ブランチは「もう 1 つの作業場所」。
+                  ② main は壊さない、ブランチで試す、うまくいけば取り込む。
+                  ③ ブランチ名は中身が分かるように付ける。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Pager -->
+          <nav class="pager" aria-label="前後のページ">
+            <a class="pager-link pager-link--disabled" href="#" aria-disabled="true">
+              <span class="pager-link__label">← STEP 01</span>
+              <span class="pager-link__title">Issue（準備中）</span>
+            </a>
+            <a class="pager-link pager-link--next pager-link--disabled" href="#" aria-disabled="true">
+              <span class="pager-link__label">STEP 03 →</span>
+              <span class="pager-link__title">Worktree（準備中）</span>
+            </a>
+          </nav>
+
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p class="site-footer__copy">© Git の歩き方 — 社内 AI 推進向け教材</p>
+      <nav class="site-footer__nav" aria-label="フッターナビ">
+        <a href="index.html">ホーム</a>
+        <a href="index.html#flow">全体の流れ</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

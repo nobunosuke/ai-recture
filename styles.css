@@ -78,7 +78,18 @@ button { font: inherit; cursor: pointer; border: 0; background: none; color: inh
 
   /* container */
   --container: 1120px;
+
+  /* topic theme (per-page accent — default: branch) */
+  --topic: var(--c-branch);
+  --topic-bg: var(--c-branch-bg);
 }
+
+/* per-page topic theme override */
+.topic-issue    { --topic: var(--c-issue);    --topic-bg: var(--c-issue-bg); }
+.topic-branch   { --topic: var(--c-branch);   --topic-bg: var(--c-branch-bg); }
+.topic-worktree { --topic: var(--c-worktree); --topic-bg: var(--c-worktree-bg); }
+.topic-pr       { --topic: var(--c-pr);       --topic-bg: var(--c-pr-bg); }
+.topic-conflict { --topic: var(--c-conflict); --topic-bg: var(--c-conflict-bg); }
 
 /* ---------- Base ---------- */
 html { font-size: 16px; }
@@ -536,8 +547,8 @@ code, kbd, samp {
   padding: 0.375rem 0.75rem;
   border-radius: var(--r-pill);
   width: fit-content;
-  background: var(--c-branch-bg);
-  color: var(--c-branch);
+  background: var(--topic-bg);
+  color: var(--topic);
 }
 .page-hero__title {
   font-size: clamp(2rem, 4vw, 2.75rem);
@@ -545,7 +556,7 @@ code, kbd, samp {
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
-.page-hero__title span { color: var(--c-branch); }
+.page-hero__title span { color: var(--topic); }
 .page-hero__lead {
   font-size: clamp(1rem, 1.6vw, 1.125rem);
   color: var(--ink-soft);
@@ -605,8 +616,8 @@ code, kbd, samp {
   width: 32px;
   height: 32px;
   border-radius: var(--r-sm);
-  background: var(--c-branch-bg);
-  color: var(--c-branch);
+  background: var(--topic-bg);
+  color: var(--topic);
   font-size: 1rem;
   font-weight: 700;
   margin-right: var(--sp-3);
@@ -644,7 +655,7 @@ code, kbd, samp {
   top: 0.7em;
   width: 6px;
   height: 6px;
-  background: var(--c-branch);
+  background: var(--topic);
   border-radius: 50%;
 }
 
@@ -789,7 +800,7 @@ code, kbd, samp {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--c-branch);
+  background: var(--topic);
   color: white;
   display: grid;
   place-items: center;

@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Conflict（コンフリクト）の基本。同じ場所を別々に編集してしまった時に起きる「どっち残す？」を、図解で理解する。">
+  <title>Conflict — 壊れてない、判断を待っているだけ｜Git の歩き方</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700;800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="topic-conflict">
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="index.html">
+        <span class="brand__mark">G</span>
+        <span class="brand__title">Git の歩き方</span>
+        <span class="brand__sub">— 5つの言葉で覚える、毎日の流れ</span>
+      </a>
+      <nav class="nav" aria-label="主要セクション">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html#flow">全体の流れ</a></li>
+          <li><a class="nav__link" href="index.html#why">なぜ学ぶ?</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <nav class="crumb" aria-label="パンくず">
+        <a href="index.html">ホーム</a>
+        <span class="crumb__sep">/</span>
+        <span class="crumb__current">Conflict（コンフリクト）</span>
+      </nav>
+    </div>
+
+    <!-- Page hero -->
+    <section class="page-hero">
+      <div class="container page-hero__inner">
+        <span class="page-hero__tag">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          分岐ルート ／ CONFLICT
+        </span>
+        <h1 class="page-hero__title"><span>Conflict</span> — 壊れてない、<br>判断を待っているだけ。</h1>
+        <p class="page-hero__lead">
+          Conflict は、エラーでも事故でもない。<strong>「同じ場所が 2 か所から書き換えられたから、どちらを残すか教えて」</strong>と Git が聞いてきている状態だ。
+          落ち着いてマーカーを読めば、数分で片付く日常作業になる。
+        </p>
+      </div>
+    </section>
+
+    <!-- Body -->
+    <section class="page-body">
+      <div class="container page-grid">
+        <!-- TOC sidebar -->
+        <aside class="toc" aria-label="目次">
+          <div class="toc__title">CONTENTS</div>
+          <ul class="toc__list">
+            <li><a class="toc__link" href="#one-line">1. 一言で言うと</a></li>
+            <li><a class="toc__link" href="#why">2. なぜ起きるのか</a></li>
+            <li><a class="toc__link" href="#diagram">3. 図で見る動き</a></li>
+            <li><a class="toc__link" href="#marker">4. マーカーの読み方</a></li>
+            <li><a class="toc__link" href="#resolve">5. 解決の流れ</a></li>
+            <li><a class="toc__link" href="#tips">6. 怖くないコツ</a></li>
+            <li><a class="toc__link" href="#summary">7. まとめ</a></li>
+          </ul>
+        </aside>
+
+        <!-- Main content -->
+        <article class="content">
+
+          <!-- 1. 一言で言うと -->
+          <section id="one-line">
+            <h2><span class="num">1</span>一言で言うと</h2>
+            <p class="lead">
+              Conflict（コンフリクト）とは、<strong>同じファイルの同じ場所を、別々の人が違う内容に書き換えた時</strong>に、Git が「どちらを残すか教えて」と聞いてくる状態のこと。
+              壊れたわけでも、間違ったわけでもない。Git が安全側に倒して、判断を人間に委ねている。
+            </p>
+            <ul class="bullets">
+              <li><strong>異常じゃない</strong>。「判断保留」のお知らせ。出たら直すだけ。</li>
+              <li><strong>自動マージできない時だけ起きる</strong>。違う場所の編集なら Git が勝手に合流させてくれる。</li>
+              <li><strong>解決は「どっち残す？」を決めて書き直すだけ</strong>。難しい技術じゃなく、判断作業。</li>
+            </ul>
+          </section>
+
+          <!-- 2. なぜ起きる -->
+          <section id="why">
+            <h2><span class="num">2</span>なぜ起きるのか</h2>
+            <p>
+              ブランチを使えば、それぞれが独立して編集できる。だけど合流（マージ）するときに、
+              <strong>同じ行を二人とも別の内容に書き換えていた</strong>ら、Git は「どちらが正しいか」を機械的に決められない。
+              「両方の言い分」をファイルに残して、人間に判断を委ねる — それが Conflict だ。
+            </p>
+
+            <div class="line-compare">
+              <div class="line-compare__card line-compare__card--ok">
+                <div class="line-compare__head">
+                  <span class="line-compare__title">違う行を編集</span>
+                  <span class="line-compare__tag">自動マージ OK</span>
+                </div>
+                <div class="line-compare__file" aria-label="file.md（違う行を編集した例）">
+                  <div class="line-compare__file-row is-our"><span class="ln">1</span><span class="txt"># 価格表（Aさん編集）</span></div>
+                  <div class="line-compare__file-row"><span class="ln">2</span><span class="txt">通常価格</span></div>
+                  <div class="line-compare__file-row is-their"><span class="ln">3</span><span class="txt">新商品 A: ¥3,800（Bさん編集）</span></div>
+                  <div class="line-compare__file-row"><span class="ln">4</span><span class="txt">在庫: 120 個</span></div>
+                </div>
+                <p class="line-compare__verdict">
+                  <strong>Git は両方を採用</strong>。ぶつかってないから判断不要。気付かないまま合流する。
+                </p>
+              </div>
+
+              <div class="line-compare__card line-compare__card--bad">
+                <div class="line-compare__head">
+                  <span class="line-compare__title">同じ行を編集</span>
+                  <span class="line-compare__tag">⚠ Conflict</span>
+                </div>
+                <div class="line-compare__file" aria-label="file.md（同じ行を別の内容に編集した例）">
+                  <div class="line-compare__file-row"><span class="ln">1</span><span class="txt"># 価格表</span></div>
+                  <div class="line-compare__file-row"><span class="ln">2</span><span class="txt">通常価格</span></div>
+                  <div class="line-compare__file-row is-our"><span class="ln">3</span><span class="txt">新商品 A: ¥3,800 ← Aさん</span></div>
+                  <div class="line-compare__file-row is-their"><span class="ln">3</span><span class="txt">新商品 A: ¥4,200 ← Bさん</span></div>
+                </div>
+                <p class="line-compare__verdict">
+                  <strong>Git は判断保留</strong>。「3 行目、どっちが正解？」と聞いてくる。これが Conflict。
+                </p>
+              </div>
+            </div>
+
+            <div class="callout">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">Conflict は「Git が壊れた」じゃない</div>
+                <p class="callout__text">
+                  Git は最後まで安全に振る舞っている。勝手にどちらかを上書きせず、両方の主張を残して人間に判断を求める。
+                  これは「機能」であって、「不具合」じゃない。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. 図で見る -->
+          <section id="diagram">
+            <h2><span class="num">3</span>図で見る動き</h2>
+            <p>
+              左から右へ時間が流れる図。<strong>上の線が本番（main）</strong>、下の 2 本がそれぞれ <code>price-aki</code> と <code>price-fuyu</code> ブランチ。
+              両方が同じ <code>price.md</code> の 3 行目を別の値に書き換え、合流時に Conflict が起きる流れだ。
+            </p>
+
+            <figure class="diagram">
+              <header class="diagram__head">
+                <span class="diagram__title">Conflict が起きる瞬間</span>
+                <div class="diagram__legend">
+                  <span class="diagram__legend-item"><span class="dot" style="background:#0F172A"></span>main（本番）</span>
+                  <span class="diagram__legend-item"><span class="dot" style="background:#059669"></span>price-aki（¥3,800）</span>
+                  <span class="diagram__legend-item"><span class="dot" style="background:#DC2626"></span>price-fuyu（¥4,200）</span>
+                </div>
+              </header>
+
+              <div class="diagram__svg-wrap">
+                <svg viewBox="-140 0 1020 400" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="main から 2 つのブランチが分岐し、同じ行を別の値に編集した結果、合流時に Conflict が発生する図">
+                  <defs>
+                    <marker id="arr-grey" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                      <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+                    </marker>
+                  </defs>
+
+                  <!-- main line -->
+                  <line x1="60" y1="120" x2="820" y2="120" stroke="#0F172A" stroke-width="3" stroke-linecap="round"/>
+
+                  <!-- aki branch line -->
+                  <path d="M200,120 C220,120 220,220 240,220" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round"/>
+                  <line x1="240" y1="220" x2="500" y2="220" stroke="#059669" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M500,220 C540,220 580,180 620,150" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round"/>
+
+                  <!-- fuyu branch line -->
+                  <path d="M200,120 C220,120 220,320 240,320" fill="none" stroke="#DC2626" stroke-width="3" stroke-linecap="round"/>
+                  <line x1="240" y1="320" x2="540" y2="320" stroke="#DC2626" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M540,320 C580,320 600,200 620,170" fill="none" stroke="#DC2626" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 5"/>
+
+                  <!-- main commits -->
+                  <g>
+                    <circle cx="120" cy="120" r="9" fill="#FFFFFF" stroke="#0F172A" stroke-width="3"/>
+                    <text x="120" y="98" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#475569">A</text>
+
+                    <circle cx="200" cy="120" r="9" fill="#FFFFFF" stroke="#0F172A" stroke-width="3"/>
+                    <text x="200" y="98" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#475569">B</text>
+                    <text x="200" y="86" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#94A3B8">line3: ¥3,500</text>
+
+                    <!-- conflict point -->
+                    <circle cx="660" cy="120" r="13" fill="#FEE2E2" stroke="#DC2626" stroke-width="3"/>
+                    <text x="660" y="125" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="800" fill="#DC2626">!</text>
+                    <text x="660" y="92" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#DC2626">Conflict</text>
+
+                    <!-- resolved commit -->
+                    <circle cx="770" cy="120" r="11" fill="#0F172A" stroke="#0F172A" stroke-width="3"/>
+                    <text x="770" y="98" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#0F172A" font-weight="700">R (resolved)</text>
+                  </g>
+
+                  <!-- aki commit -->
+                  <g>
+                    <circle cx="380" cy="220" r="9" fill="#FFFFFF" stroke="#059669" stroke-width="3"/>
+                    <text x="380" y="246" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#475569">x1</text>
+                    <text x="380" y="262" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#059669" font-weight="600">line3 → ¥3,800</text>
+                  </g>
+
+                  <!-- fuyu commit -->
+                  <g>
+                    <circle cx="400" cy="320" r="9" fill="#FFFFFF" stroke="#DC2626" stroke-width="3"/>
+                    <text x="400" y="346" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#475569">y1</text>
+                    <text x="400" y="362" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#DC2626" font-weight="600">line3 → ¥4,200</text>
+                  </g>
+
+                  <!-- labels -->
+                  <text x="40" y="125" text-anchor="end" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#0F172A">main</text>
+                  <text x="40" y="225" text-anchor="end" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#059669">price-aki</text>
+                  <text x="40" y="325" text-anchor="end" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#DC2626">price-fuyu</text>
+
+                  <!-- callouts -->
+                  <g>
+                    <rect x="240" y="38" width="180" height="36" rx="8" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+                    <text x="330" y="55" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#5B21B6">① 2 つ同時にブランチを切る</text>
+                    <text x="330" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#5B21B6">同じファイルの同じ行を別々に編集</text>
+
+                    <rect x="540" y="38" width="180" height="36" rx="8" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5"/>
+                    <text x="630" y="55" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#991B1B">② 合流時に判断保留</text>
+                    <text x="630" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#991B1B">Git「どっち残す？」</text>
+                  </g>
+
+                  <!-- time axis -->
+                  <line x1="60" y1="380" x2="820" y2="380" stroke="#CBD5E1" stroke-width="1.5" marker-end="url(#arr-grey)"/>
+                  <text x="60" y="396" text-anchor="start" font-family="Inter, sans-serif" font-size="11" fill="#94A3B8">時間の流れ</text>
+                </svg>
+              </div>
+
+              <figcaption class="diagram__caption">
+                共通の起点 B から 2 本のブランチが切られ、両方が同じ <code>line3</code> を別の値に編集。
+                合流しようとした瞬間に <strong>Git は「どっち？」と聞いてくる</strong>。
+              </figcaption>
+            </figure>
+          </section>
+
+          <!-- 4. マーカーの読み方 -->
+          <section id="marker">
+            <h2><span class="num">4</span>マーカーの読み方</h2>
+            <p>
+              Conflict が起きると、ファイルの中に <strong>3 本のマーカー線</strong>が自動で入る。
+              これは「Git が両方の主張をそのまま並べて見せている」状態。読めれば怖くない。
+            </p>
+
+            <div class="codeblock" role="img" aria-label="Conflict マーカーが入った price.md の中身">
+              <div class="codeblock__head">
+                <span class="codeblock__dots"><span></span><span></span><span></span></span>
+                <span class="codeblock__file">price.md</span>
+              </div>
+              <div class="codeblock__body">
+                <div class="codeblock__line"><span class="codeblock__ln">1</span><span class="codeblock__txt"># 価格表</span></div>
+                <div class="codeblock__line"><span class="codeblock__ln">2</span><span class="codeblock__txt">通常価格</span></div>
+                <div class="codeblock__line"><span class="codeblock__ln">3</span><span class="codeblock__txt"></span></div>
+                <div class="codeblock__line codeblock__line--m-our"><span class="codeblock__ln">4</span><span class="codeblock__txt">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD <span class="cmt"># ← 自分の現在のブランチ</span></span></div>
+                <div class="codeblock__line codeblock__line--our"><span class="codeblock__ln">5</span><span class="codeblock__txt">新商品 A: ¥3,800</span></div>
+                <div class="codeblock__line codeblock__line--m-sep"><span class="codeblock__ln">6</span><span class="codeblock__txt">======= <span class="cmt"># ← 境界線</span></span></div>
+                <div class="codeblock__line codeblock__line--their"><span class="codeblock__ln">7</span><span class="codeblock__txt">新商品 A: ¥4,200</span></div>
+                <div class="codeblock__line codeblock__line--m-their"><span class="codeblock__ln">8</span><span class="codeblock__txt">&gt;&gt;&gt;&gt;&gt;&gt;&gt; price-fuyu <span class="cmt"># ← 取り込もうとしている向こうの版</span></span></div>
+                <div class="codeblock__line"><span class="codeblock__ln">9</span><span class="codeblock__txt"></span></div>
+                <div class="codeblock__line"><span class="codeblock__ln">10</span><span class="codeblock__txt">在庫: 120 個</span></div>
+              </div>
+            </div>
+
+            <div class="marker-legend">
+              <div class="marker-legend-row marker-legend-row--our">
+                <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code>
+                <p>ここから下が <strong>自分の現在のブランチの版</strong>。HEAD は「いまチェックアウトしている方」を指す Git 用語。</p>
+              </div>
+              <div class="marker-legend-row marker-legend-row--sep">
+                <code>=======</code>
+                <p>境界線。<strong>これより上が「自分の版」、下が「向こうの版」</strong>。</p>
+              </div>
+              <div class="marker-legend-row marker-legend-row--their">
+                <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; price-fuyu</code>
+                <p>ここまでが <strong>取り込もうとしているブランチの版</strong>。ブランチ名がそのまま入る。</p>
+              </div>
+            </div>
+
+            <p>
+              つまり<strong>「上が自分、下が相手」</strong>を覚えれば 8 割。
+              あとは <strong>3 本のマーカー線を消して、最終的に残したい版だけを書く</strong>。それで完了だ。
+            </p>
+
+            <div class="compare">
+              <div class="compare__card compare__card--our">
+                <span class="compare__label"><span class="dot"></span>自分の版（HEAD）</span>
+                <div class="compare__content">新商品 A: ¥3,800</div>
+                <p class="compare__note">main を起点に <code>price-aki</code> ブランチが書き換えた値。</p>
+              </div>
+              <div class="compare__card compare__card--their">
+                <span class="compare__label"><span class="dot"></span>取り込む版（price-fuyu）</span>
+                <div class="compare__content">新商品 A: ¥4,200</div>
+                <p class="compare__note">合流させようとしている <code>price-fuyu</code> ブランチが書き換えた値。</p>
+              </div>
+              <div class="compare__card compare__card--final">
+                <span class="compare__label"><span class="dot"></span>最終版（自分で書く）</span>
+                <div class="compare__content">新商品 A: ¥4,200</div>
+                <p class="compare__note">営業に確認して新価格は <strong>¥4,200</strong> と判明 → こちらを採用してマーカーを削除。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 5. 解決の流れ -->
+          <section id="resolve">
+            <h2><span class="num">5</span>解決の流れ</h2>
+            <p>
+              実際の手順は 4 ステップ。難しい技術じゃなく、ファイルを開いて編集するだけだ。
+            </p>
+
+            <div class="steps">
+              <div class="step">
+                <span class="step__num">1</span>
+                <div class="step__body">
+                  <h4>Conflict したファイルを開く</h4>
+                  <p>Git が「ここで止まったよ」とファイル名を教えてくれる。エディタで開けば、マーカーが入った 3 本線が見つかる。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">2</span>
+                <div class="step__body">
+                  <h4>どちらを残すか判断する</h4>
+                  <p>マーカーの「上が自分・下が相手」を見て、最終的な正解を決める。両方混ぜることも、片方を捨てることもできる。迷ったら作業した人に聞く。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">3</span>
+                <div class="step__body">
+                  <h4>マーカー 3 行を消して、最終版だけ残す</h4>
+                  <p><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> と <code>=======</code> と <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> の 3 行は必ず削除。残すのは「自分で書いた最終的な版」だけ。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">4</span>
+                <div class="step__body">
+                  <h4>保存して「解決した」とコミットする</h4>
+                  <p>保存して、変更をコミット。これで Git は「合流できた」と認識する。Conflict は終了。</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="callout callout--warn">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">マーカーの消し忘れに注意</div>
+                <p class="callout__text">
+                  <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> や <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> を消し忘れるとファイルが壊れる。
+                  「3 本のマーカー線を全部消したか？」をコミット前にもう一度確認すること。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 6. 怖くないコツ -->
+          <section id="tips">
+            <h2><span class="num">6</span>怖くないコツ</h2>
+            <p>
+              Conflict は「起きる前にどう減らすか」と「起きた時にどう向き合うか」の 2 軸で考えると気持ちが楽になる。
+            </p>
+
+            <h3>気持ちのコツ</h3>
+            <ul class="bullets">
+              <li><strong>Conflict は壊れた状態じゃない</strong>。Git が判断を待ってるだけ。</li>
+              <li><strong>判断材料は全部ファイルに揃ってる</strong>。自分の版と相手の版が両方見えてる。</li>
+              <li><strong>分からなければ書いた人に聞く</strong>。これは技術じゃなく、合意の作業。</li>
+            </ul>
+
+            <h3>予防のコツ</h3>
+            <ul class="bullets">
+              <li><strong>こまめに合流する</strong>。差分が小さいほど衝突しにくい。週単位より日単位。</li>
+              <li><strong>同じ場所をいじりそうな時は声をかける</strong>。「いま価格表触ってる」の一言で防げる。</li>
+              <li><strong>作業前に main の最新を取り込む</strong>。古い起点から始めるほど、合流時に衝突しやすい。</li>
+            </ul>
+
+            <div class="metaphor">
+              <div class="metaphor-card metaphor-card--bad">
+                <span class="metaphor-card__label"><span class="dot"></span>Conflict が増えるチーム</span>
+                <h4>長期間ブランチを抱える</h4>
+                <p>1 ヶ月誰にも言わずに作業 → 久しぶりに合流したら同じ場所が 5 か所もぶつかってた、というやつ。</p>
+              </div>
+              <div class="metaphor-card metaphor-card--good">
+                <span class="metaphor-card__label"><span class="dot"></span>Conflict が減るチーム</span>
+                <h4>毎日合流、毎日声かけ</h4>
+                <p>こまめに main を取り込み、被りそうな時は事前に共有。起きても 1〜2 行で済む。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 7. まとめ -->
+          <section id="summary">
+            <h2><span class="num">7</span>まとめ</h2>
+            <p>
+              Conflict は「同じ場所が 2 か所から書き換えられた」時に Git が判断を委ねる仕組み。
+              読み方さえ覚えれば、難しい技術じゃなく日常の判断作業に変わる。
+            </p>
+
+            <div class="summary">
+              <div class="summary-item">
+                <div class="summary-item__label">何が起きてる</div>
+                <div class="summary-item__value">同じファイルの同じ行が、2 か所から別々に編集された。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">なぜ起きる</div>
+                <div class="summary-item__value">Git が安全側に倒して、勝手に上書きせず人間に判断を委ねる。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">解決の鍵</div>
+                <div class="summary-item__value">マーカーは「上が自分、下が相手」。最終版を書いてマーカー 3 行を消す。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">予防策</div>
+                <div class="summary-item__value">こまめに合流、被りそうな場所は声かけ、作業前に最新を取り込む。</div>
+              </div>
+            </div>
+
+            <div class="callout callout--ok" style="margin-top: var(--sp-8);">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">3 行で覚えるなら</div>
+                <p class="callout__text">
+                  ① Conflict は「どっち残す？」と聞かれてる状態。壊れてない。
+                  ② マーカーの上が自分、下が相手。最終版を書いて 3 本のマーカー線を消す。
+                  ③ こまめに合流しておくと、そもそも起きにくい。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Pager -->
+          <nav class="pager" aria-label="前後のページ">
+            <a class="pager-link" href="branch.html">
+              <span class="pager-link__label">← STEP 02</span>
+              <span class="pager-link__title">Branch</span>
+            </a>
+            <a class="pager-link pager-link--next" href="pr.html">
+              <span class="pager-link__label">STEP 04 →</span>
+              <span class="pager-link__title">Pull Request</span>
+            </a>
+          </nav>
+
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p class="site-footer__copy">© Git の歩き方 — 社内 AI 推進向け教材</p>
+      <nav class="site-footer__nav" aria-label="フッターナビ">
+        <a href="index.html">ホーム</a>
+        <a href="index.html#flow">全体の流れ</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

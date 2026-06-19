@@ -78,7 +78,17 @@ button { font: inherit; cursor: pointer; border: 0; background: none; color: inh
 
   /* container */
   --container: 1120px;
+
+  /* topic theme (per-page; overridden by [data-topic]) */
+  --c-page: var(--c-branch);
+  --c-page-bg: var(--c-branch-bg);
 }
+
+[data-topic="branch"]   { --c-page: var(--c-branch);   --c-page-bg: var(--c-branch-bg); }
+[data-topic="worktree"] { --c-page: var(--c-worktree); --c-page-bg: var(--c-worktree-bg); }
+[data-topic="issue"]    { --c-page: var(--c-issue);    --c-page-bg: var(--c-issue-bg); }
+[data-topic="pr"]       { --c-page: var(--c-pr);       --c-page-bg: var(--c-pr-bg); }
+[data-topic="conflict"] { --c-page: var(--c-conflict); --c-page-bg: var(--c-conflict-bg); }
 
 /* ---------- Base ---------- */
 html { font-size: 16px; }
@@ -536,8 +546,8 @@ code, kbd, samp {
   padding: 0.375rem 0.75rem;
   border-radius: var(--r-pill);
   width: fit-content;
-  background: var(--c-branch-bg);
-  color: var(--c-branch);
+  background: var(--c-page-bg);
+  color: var(--c-page);
 }
 .page-hero__title {
   font-size: clamp(2rem, 4vw, 2.75rem);
@@ -545,7 +555,7 @@ code, kbd, samp {
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
-.page-hero__title span { color: var(--c-branch); }
+.page-hero__title span { color: var(--c-page); }
 .page-hero__lead {
   font-size: clamp(1rem, 1.6vw, 1.125rem);
   color: var(--ink-soft);
@@ -605,8 +615,8 @@ code, kbd, samp {
   width: 32px;
   height: 32px;
   border-radius: var(--r-sm);
-  background: var(--c-branch-bg);
-  color: var(--c-branch);
+  background: var(--c-page-bg);
+  color: var(--c-page);
   font-size: 1rem;
   font-weight: 700;
   margin-right: var(--sp-3);
@@ -644,7 +654,7 @@ code, kbd, samp {
   top: 0.7em;
   width: 6px;
   height: 6px;
-  background: var(--c-branch);
+  background: var(--c-page);
   border-radius: 50%;
 }
 
@@ -683,8 +693,8 @@ code, kbd, samp {
 .callout__text { font-size: 0.875rem; color: var(--ink-soft); line-height: 1.7; }
 .callout--warn { border-left-color: var(--c-conflict); }
 .callout--warn .callout__icon { background: var(--c-conflict-bg); color: var(--c-conflict); }
-.callout--ok { border-left-color: var(--c-branch); }
-.callout--ok .callout__icon { background: var(--c-branch-bg); color: var(--c-branch); }
+.callout--ok { border-left-color: var(--c-page); }
+.callout--ok .callout__icon { background: var(--c-page-bg); color: var(--c-page); }
 
 /* metaphor box */
 .metaphor {
@@ -789,7 +799,7 @@ code, kbd, samp {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--c-branch);
+  background: var(--c-page);
   color: white;
   display: grid;
   place-items: center;

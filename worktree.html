@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ワークツリー（Worktree）の基本。ブランチごとに作業フォルダを分けて、切り替えなしで並行作業するための仕組みを、図解で理解する。">
+  <title>Worktree — 机を増やして、同時に進める｜Git の歩き方</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700;800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-topic="worktree">
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="index.html">
+        <span class="brand__mark">G</span>
+        <span class="brand__title">Git の歩き方</span>
+        <span class="brand__sub">— 5つの言葉で覚える、毎日の流れ</span>
+      </a>
+      <nav class="nav" aria-label="主要セクション">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html#flow">全体の流れ</a></li>
+          <li><a class="nav__link" href="index.html#why">なぜ学ぶ?</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <nav class="crumb" aria-label="パンくず">
+        <a href="index.html">ホーム</a>
+        <span class="crumb__sep">/</span>
+        <span class="crumb__current">Worktree（ワークツリー）</span>
+      </nav>
+    </div>
+
+    <!-- Page hero -->
+    <section class="page-hero">
+      <div class="container page-hero__inner">
+        <span class="page-hero__tag">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M16 9v6"/><path d="M13 12h6"/></svg>
+          STEP 03 ／ WORKTREE
+        </span>
+        <h1 class="page-hero__title"><span>Worktree</span> — 机を増やして、<br>同時に進める。</h1>
+        <p class="page-hero__lead">
+          ブランチは「もう 1 つの版」を作る仕組み。けれど、机（作業するフォルダ）は 1 枚しかない。
+          <strong>ワークツリー</strong>は、その机を増やす仕組みだ。ブランチごとに別フォルダを持って、切り替えなしで並行作業できる。
+        </p>
+      </div>
+    </section>
+
+    <!-- Body -->
+    <section class="page-body">
+      <div class="container page-grid">
+        <!-- TOC sidebar -->
+        <aside class="toc" aria-label="目次">
+          <div class="toc__title">CONTENTS</div>
+          <ul class="toc__list">
+            <li><a class="toc__link" href="#one-line">1. 一言で言うと</a></li>
+            <li><a class="toc__link" href="#why">2. なぜ必要なのか</a></li>
+            <li><a class="toc__link" href="#diagram">3. 図で見る動き</a></li>
+            <li><a class="toc__link" href="#flow">4. 実際の流れ</a></li>
+            <li><a class="toc__link" href="#tips">5. 使うときのコツ</a></li>
+            <li><a class="toc__link" href="#summary">6. まとめ</a></li>
+          </ul>
+        </aside>
+
+        <!-- Main content -->
+        <article class="content">
+
+          <!-- 1. 一言で言うと -->
+          <section id="one-line">
+            <h2><span class="num">1</span>一言で言うと</h2>
+            <p class="lead">
+              ワークツリーとは、同じリポジトリの中で、<strong>ブランチごとに別の作業フォルダ</strong>を持てる仕組みのことだ。
+              ふつうは 1 つのフォルダで作業して、ブランチを切り替えるたびに中身が入れ替わる。ワークツリーを使えば、フォルダごと並行で動かせる。
+            </p>
+            <ul class="bullets">
+              <li><strong>切り替えなしで並行作業</strong>。複数のブランチを、別々のフォルダで同時に進められる。</li>
+              <li><strong>編集途中でも中断しない</strong>。コミット前の作業を片付けなくても、別の作業に手をつけられる。</li>
+              <li><strong>終わったらフォルダごと捨てる</strong>。後始末も、フォルダを片付けるだけでシンプル。</li>
+            </ul>
+          </section>
+
+          <!-- 2. なぜ必要 -->
+          <section id="why">
+            <h2><span class="num">2</span>なぜ必要なのか</h2>
+            <p>
+              ブランチだけで十分なのでは？と思うかもしれない。確かに、1 つの作業を淡々と進める間は、ブランチだけで困らない。
+              問題は<strong>「途中で割り込みが入ったとき」</strong>だ。
+            </p>
+            <p>
+              機能 A を作っている最中に、急ぎのバグ修正を頼まれた。レビュー待ちのブランチを 5 分だけ確認したい。
+              ブランチだけでは、いまの作業をいったんコミット（または stash）して、机を片付けてから別のブランチに切り替える必要がある。
+              <strong>地味に重い</strong>。元に戻ってきた頃には、何を考えてたかも飛んでいる。
+            </p>
+
+            <div class="metaphor">
+              <div class="metaphor-card metaphor-card--bad">
+                <span class="metaphor-card__label"><span class="dot"></span>ワークツリーを使わないと</span>
+                <h4>机は 1 枚。広げては片付ける</h4>
+                <p>書類 A を広げているとき、書類 B を見たければ A を一度片付ける。終わったらまた A を広げ直す。手戻りが多い。</p>
+              </div>
+              <div class="metaphor-card metaphor-card--good">
+                <span class="metaphor-card__label"><span class="dot"></span>ワークツリーを使うと</span>
+                <h4>机を増やせば、広げたままでいい</h4>
+                <p>机を 2 枚に増やす。A も B も広げたまま、椅子を移動するだけで行き来できる。中断のコストがほぼゼロ。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. 図で見る動き -->
+          <section id="diagram">
+            <h2><span class="num">3</span>図で見る動き</h2>
+            <p>
+              ワークツリーの本質は、<strong>「リポジトリは 1 つ、作業フォルダは複数」</strong>という構造だ。
+              Git の履歴（コミットの記録）は共有しながら、編集する場所だけが別になる。
+            </p>
+
+            <figure class="diagram">
+              <header class="diagram__head">
+                <span class="diagram__title">同じリポジトリから、複数の作業フォルダが生える</span>
+                <div class="diagram__legend">
+                  <span class="diagram__legend-item"><span class="dot" style="background:#1C1917"></span>リポジトリ（履歴を持つ本体）</span>
+                  <span class="diagram__legend-item"><span class="dot" style="background:#7C3AED"></span>worktree（作業フォルダ）</span>
+                </div>
+              </header>
+
+              <div class="diagram__svg-wrap">
+                <svg viewBox="0 0 880 360" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="1 つのリポジトリから main と feature-login の 2 つの worktree が生えている図">
+                  <defs>
+                    <marker id="arrowGray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                      <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+                    </marker>
+                  </defs>
+
+                  <!-- Repository (left) -->
+                  <g>
+                    <rect x="60" y="130" width="180" height="120" rx="14" fill="#FAFAF7" stroke="#1C1917" stroke-width="2.5"/>
+                    <text x="150" y="158" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="800" fill="#1C1917">リポジトリ</text>
+                    <text x="150" y="178" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#78716C">my-project/</text>
+                    <line x1="80" y1="194" x2="220" y2="194" stroke="#E7E5E4" stroke-width="1"/>
+                    <text x="150" y="214" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#44403C">過去のコミット履歴</text>
+                    <text x="150" y="232" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#44403C">すべてのブランチ情報</text>
+                  </g>
+
+                  <!-- Connector curves -->
+                  <path d="M240,170 C320,170 320,90 400,90" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#arrowGray)"/>
+                  <path d="M240,210 C320,210 320,290 400,290" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#arrowGray)"/>
+
+                  <!-- Worktree 1: main -->
+                  <g>
+                    <rect x="410" y="50" width="220" height="100" rx="12" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2.5"/>
+                    <g transform="translate(430, 70)">
+                      <path d="M0 8 a2 2 0 0 1 2 -2 h6 l3 3 h11 a2 2 0 0 1 2 2 v13 a2 2 0 0 1 -2 2 h-20 a2 2 0 0 1 -2 -2 z" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linejoin="round"/>
+                    </g>
+                    <text x="470" y="84" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#5B21B6">my-project/</text>
+                    <text x="430" y="108" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1C1917">フォルダ 1（メイン）</text>
+                    <text x="430" y="128" font-family="Inter, sans-serif" font-size="12" fill="#44403C">ブランチ: <tspan font-family="JetBrains Mono, monospace" font-weight="700" fill="#5B21B6">main</tspan></text>
+                  </g>
+
+                  <!-- Worktree 2: feature -->
+                  <g>
+                    <rect x="410" y="250" width="220" height="100" rx="12" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2.5"/>
+                    <g transform="translate(430, 270)">
+                      <path d="M0 8 a2 2 0 0 1 2 -2 h6 l3 3 h11 a2 2 0 0 1 2 2 v13 a2 2 0 0 1 -2 2 h-20 a2 2 0 0 1 -2 -2 z" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linejoin="round"/>
+                    </g>
+                    <text x="470" y="284" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#5B21B6">../feature-login/</text>
+                    <text x="430" y="308" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1C1917">フォルダ 2（追加）</text>
+                    <text x="430" y="328" font-family="Inter, sans-serif" font-size="12" fill="#44403C">ブランチ: <tspan font-family="JetBrains Mono, monospace" font-weight="700" fill="#5B21B6">feature-login</tspan></text>
+                  </g>
+
+                  <!-- Right callouts -->
+                  <g>
+                    <rect x="660" y="60" width="180" height="80" rx="10" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+                    <text x="750" y="84" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#5B21B6">そのまま編集</text>
+                    <text x="750" y="104" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5B21B6">いつもの作業を</text>
+                    <text x="750" y="120" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5B21B6">中断せずに続けられる</text>
+                  </g>
+                  <g>
+                    <rect x="660" y="260" width="180" height="80" rx="10" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+                    <text x="750" y="284" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#5B21B6">割り込み用に追加</text>
+                    <text x="750" y="304" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5B21B6">レビュー・修正など</text>
+                    <text x="750" y="320" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5B21B6">必要なときだけ作る</text>
+                  </g>
+                </svg>
+              </div>
+
+              <figcaption class="diagram__caption">
+                ふたつのフォルダは同じ Git リポジトリの一部だ。片方で作ったコミットは、もう片方からもすぐ見える。
+              </figcaption>
+            </figure>
+
+            <div class="callout">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">ブランチ ≠ ワークツリー</div>
+                <p class="callout__text">
+                  ブランチは「履歴の枝分かれ」、ワークツリーは「作業する場所」。
+                  ブランチを切ると <em>履歴上の分岐</em> ができ、ワークツリーを足すと <em>物理的なフォルダ</em> が増える。役割が違う。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4. 実際の流れ -->
+          <section id="flow">
+            <h2><span class="num">4</span>実際の流れ</h2>
+            <p>
+              機能開発の途中で、急ぎのレビュー依頼が来た——という場面で見てみよう。
+            </p>
+
+            <div class="steps">
+              <div class="step">
+                <span class="step__num">1</span>
+                <div class="step__body">
+                  <h4>メインのフォルダで作業中</h4>
+                  <p>いつものフォルダで <code>feature-payment</code> ブランチを書いている。半分くらい進んだ状態。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">2</span>
+                <div class="step__body">
+                  <h4>割り込みが来たら、別フォルダを足す</h4>
+                  <p>「<code>review-pr-123</code> を確認してほしい」と頼まれた。ワークツリーで <strong>新しいフォルダ</strong> を 1 つ追加する。いまの作業は触らない。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">3</span>
+                <div class="step__body">
+                  <h4>別フォルダで割り込み作業をする</h4>
+                  <p>追加したフォルダを開いて、レビューや動作確認を進める。元のフォルダの編集中の状態は、無傷のまま残っている。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">4</span>
+                <div class="step__body">
+                  <h4>終わったらフォルダを片付ける</h4>
+                  <p>レビューが済んだら、追加したフォルダを削除する。元のフォルダに戻れば、止めたところからそのまま続けられる。</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="callout callout--ok">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">AI と並行で動かすとき、特に効く</div>
+                <p class="callout__text">
+                  最近は、Claude Code のような AI に作業を任せる場面が増えてきた。
+                  AI に 1 つの作業を進めてもらいながら、自分は別フォルダで別の作業をする——という並行運用が、ワークツリーだと自然にできる。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 5. コツ -->
+          <section id="tips">
+            <h2><span class="num">5</span>使うときのコツ</h2>
+            <p>
+              ワークツリーは強力だけど、何でも増やせばいいわけではない。3 つだけ、押さえておきたいことがある。
+            </p>
+
+            <div class="metaphor">
+              <div class="metaphor-card metaphor-card--good">
+                <span class="metaphor-card__label"><span class="dot"></span>名前で目的を表す</span>
+                <h4><code>../review-pr-123</code> / <code>../hotfix-login</code></h4>
+                <p>フォルダ名から「何のためのフォルダか」が一目で分かる。3 つ並んでも迷子にならない。</p>
+              </div>
+              <div class="metaphor-card metaphor-card--bad">
+                <span class="metaphor-card__label"><span class="dot"></span>同じブランチを 2 つ同時に開かない</span>
+                <h4>同じブランチ × 別フォルダ ＝ 混乱の元</h4>
+                <p>片方の編集がもう片方からは見えない錯覚が起きやすい。Git 自身も警告してくる。やめておく。</p>
+              </div>
+            </div>
+
+            <div class="callout callout--warn">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">終わったら片付ける</div>
+                <p class="callout__text">
+                  フォルダはディスク容量を食うし、放置するとどれが現役か分からなくなる。
+                  役目を終えたフォルダは、すぐに片付ける習慣にしておく。残しておく理由が言えないなら、捨てていい。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 6. まとめ -->
+          <section id="summary">
+            <h2><span class="num">6</span>まとめ</h2>
+            <p>
+              ワークツリーは「机を増やす」仕組み。ブランチが版を増やすものなら、ワークツリーは作業場を増やすもの。
+              並行作業のコストを下げるのが本質だ。
+            </p>
+
+            <div class="summary">
+              <div class="summary-item">
+                <div class="summary-item__label">できること</div>
+                <div class="summary-item__value">ブランチごとに別フォルダを用意し、切り替えなしで複数の作業を並行で進める。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">嬉しいこと</div>
+                <div class="summary-item__value">割り込みが来ても、いまの作業を片付けずに済む。中断のコストがほぼゼロになる。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">注意点</div>
+                <div class="summary-item__value">同じブランチを 2 つの worktree で同時に開かない。終わったら必ず片付ける。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">命名のコツ</div>
+                <div class="summary-item__value">フォルダ名は「何のための作業か」が一目で分かるように。半年後の自分にも通じる名前で。</div>
+              </div>
+            </div>
+
+            <div class="callout callout--ok" style="margin-top: var(--sp-8);">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">3 行で覚えるなら</div>
+                <p class="callout__text">
+                  ① ワークツリーは「机を増やす」仕組み。ブランチごとに別フォルダが持てる。
+                  ② 切り替えなしで並行作業できるから、割り込みに強い。
+                  ③ 終わったらフォルダごと片付ける。残さない。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Pager -->
+          <nav class="pager" aria-label="前後のページ">
+            <a class="pager-link" href="branch.html">
+              <span class="pager-link__label">← STEP 02</span>
+              <span class="pager-link__title">Branch</span>
+            </a>
+            <a class="pager-link pager-link--next pager-link--disabled" href="#" aria-disabled="true">
+              <span class="pager-link__label">STEP 04 →</span>
+              <span class="pager-link__title">Pull Request（準備中）</span>
+            </a>
+          </nav>
+
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p class="site-footer__copy">© Git の歩き方 — 社内 AI 推進向け教材</p>
+      <nav class="site-footer__nav" aria-label="フッターナビ">
+        <a href="index.html">ホーム</a>
+        <a href="index.html#flow">全体の流れ</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

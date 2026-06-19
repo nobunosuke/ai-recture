@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Git の基本を、5つの言葉で。エンジニアでない人も、流れから理解できる Git 入門。">
+  <title>Git は怖くない。5つの言葉で覚える、毎日の流れ。</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700;800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="index.html">
+        <span class="brand__mark">G</span>
+        <span class="brand__title">Git の歩き方</span>
+        <span class="brand__sub">— 5つの言葉で覚える、毎日の流れ</span>
+      </a>
+      <nav class="nav" aria-label="主要セクション">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="#flow">全体の流れ</a></li>
+          <li><a class="nav__link" href="#why">なぜ学ぶ?</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container hero__inner">
+        <span class="hero__eyebrow">Git 入門 ／ 全体像から学ぶ</span>
+        <h1 class="hero__title">
+          Git は怖くない。<br>
+          <em>5つの言葉</em>を知れば、流れが見えてくる。
+        </h1>
+        <p class="hero__lead">
+          エンジニアが毎日 Git で何をやっているのか。バラバラの用語を覚える前に、まず作業全体の流れをつかむ。
+          この資料は、5 つの基本概念を順番に追いながら、それぞれのつながりを地図のように理解するための入門書だ。
+        </p>
+        <div class="hero__meta">
+          <span class="hero__chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
+            想定時間 15 分
+          </span>
+          <span class="hero__chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            対象 非エンジニア／これから触る人
+          </span>
+          <span class="hero__chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+            5 つの概念
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Flow -->
+    <section id="flow" class="section">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-head__title">
+            <span class="section-head__eyebrow">Map of the words</span>
+            <h2>5つの言葉を、流れで覚える。</h2>
+          </div>
+          <p class="section-head__lead">
+            Git の作業は順序がある。Issue で「やること」を切り出し、Branch で作業場所を分ける。
+            Worktree で実際に編集し、PR で取り込みを依頼する。途中で Conflict が起きることもある。
+          </p>
+        </div>
+
+        <div class="flow">
+          <div class="flow__track" role="list">
+            <div class="flow__connector" aria-hidden="true"></div>
+
+            <!-- Issue -->
+            <a class="flow-card flow-card--issue" href="#" role="listitem" aria-disabled="true">
+              <span class="flow-card__badge">準備中</span>
+              <span class="flow-card__step"><span class="flow-card__step-num">1</span>STEP 01</span>
+              <span class="flow-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
+              </span>
+              <h3 class="flow-card__title">Issue</h3>
+              <p class="flow-card__desc">やることを 1 件ずつ切り出して、見える場所に置く。出発点。</p>
+              <span class="flow-card__cta">
+                詳しく見る
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              </span>
+            </a>
+
+            <!-- Branch -->
+            <a class="flow-card flow-card--branch" href="branch.html" role="listitem">
+              <span class="flow-card__step"><span class="flow-card__step-num">2</span>STEP 02</span>
+              <span class="flow-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+              </span>
+              <h3 class="flow-card__title">Branch</h3>
+              <p class="flow-card__desc">いまの状態を壊さずに、別バージョンで作業するための分身。</p>
+              <span class="flow-card__cta">
+                詳しく見る
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              </span>
+            </a>
+
+            <!-- Worktree -->
+            <a class="flow-card flow-card--worktree" href="#" role="listitem" aria-disabled="true">
+              <span class="flow-card__badge">準備中</span>
+              <span class="flow-card__step"><span class="flow-card__step-num">3</span>STEP 03</span>
+              <span class="flow-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M16 9v6"/><path d="M13 12h6"/></svg>
+              </span>
+              <h3 class="flow-card__title">Worktree</h3>
+              <p class="flow-card__desc">ブランチごとに作業フォルダを分けて、並行で進められる仕組み。</p>
+              <span class="flow-card__cta">
+                詳しく見る
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              </span>
+            </a>
+
+            <!-- PR -->
+            <a class="flow-card flow-card--pr" href="#" role="listitem" aria-disabled="true">
+              <span class="flow-card__badge">準備中</span>
+              <span class="flow-card__step"><span class="flow-card__step-num">4</span>STEP 04</span>
+              <span class="flow-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><line x1="6" y1="9" x2="6" y2="15"/><path d="M15 6h2a2 2 0 0 1 2 2v7"/></svg>
+              </span>
+              <h3 class="flow-card__title">Pull Request</h3>
+              <p class="flow-card__desc">「この変更を取り込んでください」と依頼する、レビュー付きの提案書。</p>
+              <span class="flow-card__cta">
+                詳しく見る
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              </span>
+            </a>
+          </div>
+
+          <!-- Conflict branch -->
+          <div class="flow__branchpath">
+            <a class="flow-card flow-card--conflict" href="#" role="listitem" aria-disabled="true">
+              <span class="flow-card__badge">準備中</span>
+              <span class="flow-card__step"><span class="flow-card__step-num">!</span>分岐ルート</span>
+              <span class="flow-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </span>
+              <h3 class="flow-card__title">Conflict</h3>
+              <p class="flow-card__desc">同じ場所を別々に編集してしまった時に起きる、どちらを残すかの調整作業。</p>
+              <span class="flow-card__cta">
+                詳しく見る
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              </span>
+            </a>
+            <p class="flow__branchpath-note">
+              <strong>Conflict</strong> は通常の流れの「外側」で起きる例外。
+              複数人が同時に同じファイルの同じ箇所を編集すると、Git は自動的に判断できず、人間に判断を委ねる。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Git -->
+    <section id="why" class="section">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-head__title">
+            <span class="section-head__eyebrow">Why we learn</span>
+            <h2>なぜ Git を学ぶのか。</h2>
+          </div>
+          <p class="section-head__lead">
+            Git は「ファイルの歴史を全部覚えてくれる仕組み」だ。やったことを取り消せる安心と、複数人で同じ作業に手をつけても壊れない安全がある。
+          </p>
+        </div>
+
+        <div class="story">
+          <article class="story-card">
+            <span class="story-card__num">01 / 並行</span>
+            <h3 class="story-card__title">同時に動ける</h3>
+            <p class="story-card__text">同じ資料を別々の人が編集しても、上書き合戦にならない。それぞれの作業を後から繋ぎ合わせられる。</p>
+          </article>
+          <article class="story-card">
+            <span class="story-card__num">02 / 復元</span>
+            <h3 class="story-card__title">いつでも戻せる</h3>
+            <p class="story-card__text">「昨日の状態に戻したい」が一行で叶う。失敗しても怖くないから、思い切って試せる。</p>
+          </article>
+          <article class="story-card">
+            <span class="story-card__num">03 / 共有</span>
+            <h3 class="story-card__title">変更の理由が残る</h3>
+            <p class="story-card__text">いつ・誰が・なぜ変えたかが記録される。半年後の自分やチームが過去を辿れる。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p class="site-footer__copy">© Git の歩き方 — 社内 AI 推進向け教材</p>
+      <nav class="site-footer__nav" aria-label="フッターナビ">
+        <a href="#flow">全体の流れ</a>
+        <a href="branch.html">Branch</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

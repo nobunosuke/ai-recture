@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Git の基本を、5つの言葉で。エンジニアでない人も、流れから理解できる Git 入門。">
-  <title>Git は怖くない。5つの言葉で覚える、毎日の流れ。</title>
+  <meta name="description" content="Git の基本を、言葉と流れで。エンジニアでない人も、地図のように理解できる Git 入門。">
+  <title>Git は怖くない。言葉と流れで覚える、毎日の地図。</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700;800&display=swap">
@@ -16,11 +16,12 @@
       <a class="brand" href="index.html">
         <span class="brand__mark">G</span>
         <span class="brand__title">Git の歩き方</span>
-        <span class="brand__sub">— 5つの言葉で覚える、毎日の流れ</span>
+        <span class="brand__sub">— 言葉と流れで覚える、毎日の地図</span>
       </a>
       <nav class="nav" aria-label="主要セクション">
         <ul class="nav__list">
-          <li><a class="nav__link" href="#flow">全体の流れ</a></li>
+          <li><a class="nav__link" href="#flow">作業の流れ</a></li>
+          <li><a class="nav__link" href="#sync">同期</a></li>
           <li><a class="nav__link" href="#why">なぜ学ぶ?</a></li>
         </ul>
       </nav>
@@ -34,11 +35,11 @@
         <span class="hero__eyebrow">Git 入門 ／ 全体像から学ぶ</span>
         <h1 class="hero__title">
           Git は怖くない。<br>
-          <em>5つの言葉</em>を知れば、流れが見えてくる。
+          <em>言葉と流れ</em>を知れば、地図が見えてくる。
         </h1>
         <p class="hero__lead">
           エンジニアが毎日 Git で何をやっているのか。バラバラの用語を覚える前に、まず作業全体の流れをつかむ。
-          この資料は、5 つの基本概念を順番に追いながら、それぞれのつながりを地図のように理解するための入門書だ。
+          この資料は、よく出てくる言葉を流れに沿って並べ、それぞれのつながりを地図のように理解するための入門書だ。
         </p>
         <div class="hero__meta">
           <span class="hero__chip">
@@ -51,7 +52,7 @@
           </span>
           <span class="hero__chip">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
-            5 つの概念
+            作業の流れ + ローカル⇄リモート
           </span>
         </div>
       </div>
@@ -62,8 +63,8 @@
       <div class="container">
         <div class="section-head">
           <div class="section-head__title">
-            <span class="section-head__eyebrow">Map of the words</span>
-            <h2>5つの言葉を、流れで覚える。</h2>
+            <span class="section-head__eyebrow">Step by step</span>
+            <h2>作業の流れを、4 つの言葉で覚える。</h2>
           </div>
           <p class="section-head__lead">
             Git の作業は順序がある。Issue で「やること」を切り出し、Branch で作業場所を分ける。
@@ -155,6 +156,90 @@
       </div>
     </section>
 
+    <!-- Sync (Local ⇄ Remote) -->
+    <section id="sync" class="section">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-head__title">
+            <span class="section-head__eyebrow">Local ⇄ Remote</span>
+            <h2>もう 1 つの軸：<br>ローカルと、リモート。</h2>
+          </div>
+          <p class="section-head__lead">
+            ここまでは「自分の手元」の流れ。Git にはもう一つ、自分の PC（ローカル）と共有サーバー（リモート、たとえば GitHub）の間でやり取りする仕組みがある。3 つの動作だけで覚えられる。
+          </p>
+        </div>
+
+        <div class="flow flow--sync">
+          <div class="sync-axis" aria-hidden="true">
+            <span class="sync-axis__side">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              ローカル（自分の PC）
+            </span>
+            <span class="sync-axis__arrows">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+            </span>
+            <span class="sync-axis__side">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+              リモート（GitHub）
+            </span>
+          </div>
+
+          <div class="flow__track" role="list">
+            <!-- Clone -->
+            <a class="flow-card flow-card--clone" href="clone.html" role="listitem">
+              <span class="flow-card__direction">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12l7 7 7-7"/></svg>
+                DOWNLOAD（初回）
+              </span>
+              <span class="flow-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </span>
+              <h3 class="flow-card__title">Clone</h3>
+              <p class="flow-card__desc">リモートのリポジトリを、まるごと最初に手元に複製する。すべての出発点。</p>
+              <span class="flow-card__cta">
+                詳しく見る
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              </span>
+            </a>
+
+            <!-- Pull -->
+            <a class="flow-card flow-card--pull" href="pull.html" role="listitem">
+              <span class="flow-card__direction">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12l7 7 7-7"/></svg>
+                DOWNLOAD
+              </span>
+              <span class="flow-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </span>
+              <h3 class="flow-card__title">Pull</h3>
+              <p class="flow-card__desc">リモートの最新を、自分の手元に取り込む。他の人の変更を受け取る動作。</p>
+              <span class="flow-card__cta">
+                詳しく見る
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              </span>
+            </a>
+
+            <!-- Push -->
+            <a class="flow-card flow-card--push" href="push.html" role="listitem">
+              <span class="flow-card__direction">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+                UPLOAD
+              </span>
+              <span class="flow-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </span>
+              <h3 class="flow-card__title">Push</h3>
+              <p class="flow-card__desc">自分の手元の変更を、リモートに送り出す。他の人に見えるようにする動作。</p>
+              <span class="flow-card__cta">
+                詳しく見る
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Why Git -->
     <section id="why" class="section">
       <div class="container">
@@ -193,7 +278,8 @@
     <div class="container site-footer__inner">
       <p class="site-footer__copy">© Git の歩き方 — 社内 AI 推進向け教材</p>
       <nav class="site-footer__nav" aria-label="フッターナビ">
-        <a href="#flow">全体の流れ</a>
+        <a href="#flow">作業の流れ</a>
+        <a href="#sync">ローカル ⇄ リモート</a>
         <a href="branch.html">Branch</a>
         <a href="pr.html">Pull Request</a>
       </nav>

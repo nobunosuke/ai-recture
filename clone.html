@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Clone（クローン）の基本。リモートのリポジトリを、過去の履歴ごと丸ごと自分の PC に持ってくる『最初の一回』の動作を、図解で理解する。">
+  <title>Clone — まるごと手元にコピーする、最初の一回｜Git の歩き方</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700;800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="topic-clone">
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="index.html">
+        <span class="brand__mark">G</span>
+        <span class="brand__title">Git の歩き方</span>
+        <span class="brand__sub">— 言葉と流れで覚える、毎日の地図</span>
+      </a>
+      <nav class="nav" aria-label="主要セクション">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html#flow">作業の流れ</a></li>
+          <li><a class="nav__link" href="index.html#sync">同期</a></li>
+          <li><a class="nav__link" href="index.html#why">なぜ学ぶ?</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <nav class="crumb" aria-label="パンくず">
+        <a href="index.html">ホーム</a>
+        <span class="crumb__sep">/</span>
+        <a href="index.html#sync">同期</a>
+        <span class="crumb__sep">/</span>
+        <span class="crumb__current">Clone（クローン）</span>
+      </nav>
+    </div>
+
+    <!-- Page hero -->
+    <section class="page-hero">
+      <div class="container page-hero__inner">
+        <span class="page-hero__tag">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          SYNC ／ CLONE
+        </span>
+        <h1 class="page-hero__title"><span>Clone</span> — まるごと手元に、<br>最初の一回。</h1>
+        <p class="page-hero__lead">
+          GitHub に置いてあるプロジェクトを、自分の PC で編集できるようにする「最初の一回」の動作。
+          ファイルだけじゃない。<strong>過去の履歴も、リモートとの繋がりも、まとめて</strong>持ってくる。
+        </p>
+      </div>
+    </section>
+
+    <!-- Body -->
+    <section class="page-body">
+      <div class="container page-grid">
+        <aside class="toc" aria-label="目次">
+          <div class="toc__title">CONTENTS</div>
+          <ul class="toc__list">
+            <li><a class="toc__link" href="#one-line">1. 一言で言うと</a></li>
+            <li><a class="toc__link" href="#why">2. なぜ必要なのか</a></li>
+            <li><a class="toc__link" href="#diagram">3. 図で見る動き</a></li>
+            <li><a class="toc__link" href="#flow">4. 実際の流れ</a></li>
+            <li><a class="toc__link" href="#tips">5. 注意点</a></li>
+            <li><a class="toc__link" href="#summary">6. まとめ</a></li>
+          </ul>
+        </aside>
+
+        <article class="content">
+
+          <!-- 1. 一言で言うと -->
+          <section id="one-line">
+            <h2><span class="num">1</span>一言で言うと</h2>
+            <p class="lead">
+              Clone とは、リモート（GitHub など）にあるリポジトリを、<strong>過去の履歴ごと丸ごと自分の PC にコピー</strong>してくる動作。
+              一度クローンすれば、それ以降はずっと手元で作業できる。
+            </p>
+            <ul class="bullets">
+              <li><strong>最初の一回だけ</strong>の動作。2 回目以降は <code>pull</code> で更新する。</li>
+              <li><strong>履歴も全部入る</strong>。誰がいつ何を変えたか、すべて手元で追える。</li>
+              <li><strong>リモートとの繋がりも自動で記録される</strong>。だからすぐに <code>push</code> / <code>pull</code> が使える。</li>
+            </ul>
+          </section>
+
+          <!-- 2. なぜ必要 -->
+          <section id="why">
+            <h2><span class="num">2</span>なぜ必要なのか</h2>
+            <p>
+              GitHub にプロジェクトがあっても、それはあくまで<strong>クラウド上の場所</strong>だ。
+              実際にコードを編集したり試したりするには、自分の PC に持ってこないといけない。
+              Clone はそのための「最初の一回」を担う動作だ。
+            </p>
+            <p>
+              「Web ブラウザで zip ダウンロードすればいいんじゃ?」と思うかもしれない。
+              でもそれだと、<strong>今の中身しか手に入らない</strong>。
+              Clone は違う。<strong>過去のすべての履歴と、リモートへの戻り道</strong>まで一緒に持ってくる。
+              だからその後の <code>pull</code> / <code>push</code> もすぐに動く。
+            </p>
+
+            <div class="metaphor">
+              <div class="metaphor-card metaphor-card--bad">
+                <span class="metaphor-card__label"><span class="dot"></span>zip ダウンロード</span>
+                <h4>その時の中身だけが手に入る</h4>
+                <p>過去の経緯も、リモートとの繋がりも無い。後で更新を受け取ったり、変更を送り返したりはできない。</p>
+              </div>
+              <div class="metaphor-card metaphor-card--good">
+                <span class="metaphor-card__label"><span class="dot"></span>git clone</span>
+                <h4>履歴も繋がりも全部入る</h4>
+                <p>過去のコミットも、リモートの場所も、全部記録された状態で手元に。すぐに pull / push できる。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. 図で見る動き -->
+          <section id="diagram">
+            <h2><span class="num">3</span>図で見る動き</h2>
+            <p>
+              左に GitHub（リモート）、右に自分の PC（ローカル）。
+              clone を実行すると、リモートの中身が<strong>丸ごと</strong>右側にコピーされて、新しいフォルダが手元に出来る。
+            </p>
+
+            <figure class="diagram">
+              <header class="diagram__head">
+                <span class="diagram__title">clone の動き</span>
+                <div class="diagram__legend">
+                  <span class="diagram__legend-item"><span class="dot" style="background:#DB2777"></span>リモート（GitHub）</span>
+                  <span class="diagram__legend-item"><span class="dot" style="background:#94A3B8"></span>ローカル（自分の PC）</span>
+                </div>
+              </header>
+
+              <div class="diagram__svg-wrap">
+                <svg viewBox="0 0 800 360" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="リモートのリポジトリが clone でローカルに丸ごとコピーされる図">
+                  <defs>
+                    <marker id="arrow-clone" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+                      <path d="M0,0 L10,5 L0,10 z" fill="#DB2777"/>
+                    </marker>
+                  </defs>
+
+                  <!-- Remote box -->
+                  <rect x="40" y="60" width="260" height="240" rx="16" fill="#FCE7F3" stroke="#DB2777" stroke-width="2"/>
+                  <text x="170" y="92" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="800" fill="#9D174D" letter-spacing="0.04em">GITHUB（リモート）</text>
+                  <text x="170" y="110" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BE185D">github.com/team/project</text>
+
+                  <!-- Remote commits -->
+                  <g>
+                    <line x1="100" y1="160" x2="240" y2="160" stroke="#DB2777" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+                    <circle cx="110" cy="160" r="9" fill="#FFFFFF" stroke="#DB2777" stroke-width="2.5"/>
+                    <text x="110" y="186" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#9D174D">A</text>
+                    <circle cx="170" cy="160" r="9" fill="#FFFFFF" stroke="#DB2777" stroke-width="2.5"/>
+                    <text x="170" y="186" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#9D174D">B</text>
+                    <circle cx="230" cy="160" r="9" fill="#DB2777" stroke="#DB2777" stroke-width="2.5"/>
+                    <text x="230" y="186" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#9D174D">C</text>
+                  </g>
+                  <text x="170" y="232" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#9D174D">過去の履歴がぜんぶ</text>
+                  <text x="170" y="250" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#9D174D">残ってる</text>
+
+                  <!-- Arrow -->
+                  <path d="M310 180 L490 180" stroke="#DB2777" stroke-width="3" marker-end="url(#arrow-clone)" stroke-linecap="round"/>
+                  <text x="400" y="166" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="#DB2777">git clone</text>
+                  <text x="400" y="200" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#9D174D">まるごとコピー</text>
+
+                  <!-- Local box -->
+                  <rect x="500" y="60" width="260" height="240" rx="16" fill="#F5F5F2" stroke="#94A3B8" stroke-width="2"/>
+                  <text x="630" y="92" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="800" fill="#1C1917" letter-spacing="0.04em">あなたの PC（ローカル）</text>
+                  <text x="630" y="110" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#475569">~/project/</text>
+
+                  <!-- Local commits (same as remote) -->
+                  <g>
+                    <line x1="560" y1="160" x2="700" y2="160" stroke="#475569" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+                    <circle cx="570" cy="160" r="9" fill="#FFFFFF" stroke="#475569" stroke-width="2.5"/>
+                    <text x="570" y="186" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#475569">A</text>
+                    <circle cx="630" cy="160" r="9" fill="#FFFFFF" stroke="#475569" stroke-width="2.5"/>
+                    <text x="630" y="186" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#475569">B</text>
+                    <circle cx="690" cy="160" r="9" fill="#475569" stroke="#475569" stroke-width="2.5"/>
+                    <text x="690" y="186" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#475569">C</text>
+                  </g>
+                  <text x="630" y="232" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#475569">+ リモートへの参照</text>
+                  <text x="630" y="250" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#475569">（戻り道）も保持</text>
+
+                  <!-- bottom note -->
+                  <rect x="40" y="320" width="720" height="32" rx="8" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
+                  <text x="400" y="340" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#44403C">clone した時点で、ローカルとリモートは同じ状態。これ以降は <tspan font-family="JetBrains Mono, monospace" font-weight="700" fill="#0D9488">pull</tspan> / <tspan font-family="JetBrains Mono, monospace" font-weight="700" fill="#0891B2">push</tspan> で同期する。</text>
+                </svg>
+              </div>
+
+              <figcaption class="diagram__caption">
+                clone は「最初の一回」だけ。手元に同じ状態の作業フォルダができる。
+              </figcaption>
+            </figure>
+
+            <div class="callout">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">「リモートへの参照」って何?</div>
+                <p class="callout__text">
+                  clone するとき、Git は<strong>「これは GitHub のこのアドレスから来た」</strong>という情報を一緒に記録する。
+                  これが残っているから、後で <code>pull</code> / <code>push</code> するときに「どこと同期するか」を毎回指定しなくていい。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4. 実際の流れ -->
+          <section id="flow">
+            <h2><span class="num">4</span>実際の流れ</h2>
+            <p>
+              GitHub の画面から始まり、自分の PC にプロジェクトが落ちてくるまで。
+            </p>
+
+            <div class="steps">
+              <div class="step">
+                <span class="step__num">1</span>
+                <div class="step__body">
+                  <h4>GitHub でリポジトリの URL をコピー</h4>
+                  <p>リポジトリのトップで「Code」ボタン → URL（例: <code>https://github.com/team/project.git</code>）をコピー。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">2</span>
+                <div class="step__body">
+                  <h4>ターミナルで <code>git clone</code> を実行</h4>
+                  <p><code>git clone https://github.com/team/project.git</code> のように、コピーした URL を続けて打つ。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">3</span>
+                <div class="step__body">
+                  <h4>同名のフォルダができる</h4>
+                  <p>カレントディレクトリに <code>project/</code> という新しいフォルダが作られ、中にプロジェクト一式が入っている。</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step__num">4</span>
+                <div class="step__body">
+                  <h4>フォルダに入って作業開始</h4>
+                  <p><code>cd project</code> でフォルダに入る。あとはブランチを切るも、編集するも、自由。</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 5. 注意点 -->
+          <section id="tips">
+            <h2><span class="num">5</span>注意点</h2>
+            <p>
+              clone は単純な動作だが、いくつか押さえておくと困らないポイントがある。
+            </p>
+
+            <div class="metaphor">
+              <div class="metaphor-card metaphor-card--good">
+                <span class="metaphor-card__label"><span class="dot"></span>覚えておく</span>
+                <h4>2 回目以降は <code>pull</code></h4>
+                <p>同じリポジトリをもう一度 clone する必要は無い。最新を受け取りたい時は <code>pull</code> を使う。</p>
+              </div>
+              <div class="metaphor-card metaphor-card--bad">
+                <span class="metaphor-card__label"><span class="dot"></span>気をつける</span>
+                <h4>同じ名前のフォルダがあるとエラー</h4>
+                <p>すでに <code>project/</code> が存在すると clone は失敗する。別の場所に移動するか、別名を指定して clone する。</p>
+              </div>
+            </div>
+
+            <div class="callout callout--warn">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">プライベートリポジトリは認証が必要</div>
+                <p class="callout__text">
+                  非公開のリポジトリは、clone するときに GitHub アカウントの認証（SSH 鍵 or アクセストークン）が必要になる。
+                  「URL は合ってるのに clone できない」時はまず認証を疑う。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 6. まとめ -->
+          <section id="summary">
+            <h2><span class="num">6</span>まとめ</h2>
+            <p>
+              clone は「リモートから、最初の一回、丸ごと持ってくる」動作。これさえ済めば、あとはずっとローカルで作業できる。
+            </p>
+
+            <div class="summary">
+              <div class="summary-item">
+                <div class="summary-item__label">できること</div>
+                <div class="summary-item__value">リモートのリポジトリを、履歴と繋がりごと自分の PC にコピーする。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">嬉しいこと</div>
+                <div class="summary-item__value">過去のコミットも、リモートへの戻り道も全部入る。すぐに pull / push できる。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">使う頻度</div>
+                <div class="summary-item__value">1 つのリポジトリにつき、最初の 1 回だけ。それ以降は pull で更新。</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item__label">注意点</div>
+                <div class="summary-item__value">同名フォルダがあると失敗する。プライベートは認証が必要。</div>
+              </div>
+            </div>
+
+            <div class="callout callout--ok" style="margin-top: var(--sp-8);">
+              <span class="callout__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <div>
+                <div class="callout__title">3 行で覚えるなら</div>
+                <p class="callout__text">
+                  ① clone は「最初の一回、丸ごと手元に持ってくる」。
+                  ② 過去の履歴も、リモートとの繋がりも全部入る。
+                  ③ 2 回目以降は pull で同期する。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Pager -->
+          <nav class="pager" aria-label="前後のページ">
+            <a class="pager-link" href="index.html#sync">
+              <span class="pager-link__label">← 戻る</span>
+              <span class="pager-link__title">同期セクションに戻る</span>
+            </a>
+            <a class="pager-link pager-link--next" href="pull.html">
+              <span class="pager-link__label">次へ →</span>
+              <span class="pager-link__title">Pull — 最新を取り込む</span>
+            </a>
+          </nav>
+
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p class="site-footer__copy">© Git の歩き方 — 社内 AI 推進向け教材</p>
+      <nav class="site-footer__nav" aria-label="フッターナビ">
+        <a href="index.html">ホーム</a>
+        <a href="index.html#flow">作業の流れ</a>
+        <a href="index.html#sync">同期</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

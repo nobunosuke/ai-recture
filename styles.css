@@ -162,16 +162,22 @@ code, kbd, samp {
   color: var(--ink);
 }
 .brand__mark {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   display: grid;
   place-items: center;
   background: var(--ink);
   color: var(--bg);
   border-radius: var(--r-sm);
-  font-weight: 800;
-  font-size: 0.875rem;
-  letter-spacing: -0.04em;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.brand__mark svg {
+  width: 18px;
+  height: 18px;
+}
+.brand:hover .brand__mark {
+  transform: rotate(-8deg) scale(1.05);
+  box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.25);
 }
 .brand__title { font-weight: 700; }
 .brand__sub {
